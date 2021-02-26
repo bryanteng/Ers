@@ -1,7 +1,8 @@
 import './App.css';
 import Rules from './containers/rules'
 import Deck from './components/deck'
-
+import Game from './containers/game'
+import NewPlayerInput from './components/newPlayerInput'
 
 function App() {
   return (
@@ -9,6 +10,9 @@ function App() {
       hi
       <Deck />
       <Rules />
+      <NewPlayerInput />
+      <Game />
+
     </div>
   );
 }

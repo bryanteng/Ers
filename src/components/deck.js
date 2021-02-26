@@ -4,45 +4,88 @@ function Deck(){
 
   const [deck, setDeck] = useState(["AC", "AD", "AH", "AS", "2C", "2D", "2H", "2S", "3C", "3D", "3H", "3S", "4C", "4D", "4H", "4S", "5C", "5D", "5H", "5S", "6C", "6D", "6H", "6S", "7C", "7D", "7H", "7S", "8C", "8D", "8H", "8S", "9C", "9D", "9H", "9S", "0C", "0D", "0H", "0S", "JC", "JD", "JH", "JS", "QC", "QD", "QH", "QS", "KC", "KD", "KH", "KS"])
   const [deckID, setDeckID] = useState("05win676scin")
-  const [players, setPlayers] = useState({"me": 0, "you": 0, "him": 0})
-  const [order, setOrder] = useState(["me", "you", "him"])
+  const [players, setPlayers] = useState({"me": "", "you": "", "him": "", "they": "", "their": "", "them": ""})
+  const [order, setOrder] = useState(["me", "you", "him", "they", "their", "them"])
   const [extra, setExtra] = useState(52%order.length)
-  const [currentPlayer, setCurrentPlayer] = useState(0)
+  const [currentPlayer, setCurrentPlayer] = useState(1)
 
   useEffect(()=>{
-    console.log(players, "players now")
-  },[players])
+    console.log(players)
+    if(players[order[0]] != "") pileCheck()
 
+  },[players,deck])
+
+  const pileCheck = () =>{
+    let runAgain = false
+    let pilesMade
+    return fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/me/list/`)
+    .then(data => data.json())
+    .then(data => {
+      pilesMade = data.piles
+      for(let player of order){
+        if(!pilesMade[player] || !pilesMade[player]["remaining"]){
+          runAgain = true
+          getCards(getCardsUrlMaker(player , players[player]))
+          pileCheck()
+        }
+      }
+    })
+  }
+
+  const getCards = async ( url ) =>{
+      return await fetch(url)
+  }
+
+  const drawCards = () =>{
+    fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
+      .then(data => data.json())
+      .then(data => {
+        let cards = data.cards.map(x=> x.code)
+        setDeck(cards)
+      })
+    }
 
   const distributeCards = () =>{
-    const shuffledDeck = shuffle(deck)
-    console.log(shuffledDeck)
 
     let temp = Object.assign({}, players)
     let index = 0
     let cardsPerPlayer = Math.floor(52/order.length)
     let bonus = extra
     let dealTo = currentPlayer
+    let numAdded
+    let promises = []
+    let cards
 
     while( index < 52 ){
+
       let player = order[dealTo]
-        console.log(index,"current index", player, temp)
-        if(bonus > 0){
-          temp[player] = cardsPerPlayer + 1
-          console.log(shuffledDeck.slice(index, index+cardsPerPlayer+1))
-          index+= cardsPerPlayer+1
-        }
-        else{
-          temp[player] = cardsPerPlayer
-          console.log(player, temp[player], bonus)
-          console.log(shuffledDeck.slice(index, index+cardsPerPlayer))
-          index+= cardsPerPlayer
-        }
-       bonus -= 1
-       dealTo += 1
-       if(dealTo == order.length) dealTo = 0
+        // console.log(index,"current index", player, temp)
+      numAdded = cardsPerPlayer + (bonus > 0)
+      cards = deck.slice(index, index+numAdded).join()
+      temp[player] = cards
+
+      // promises.push(getCardsUrlMaker(player,cards))
+
+      bonus -= 1
+      dealTo += 1
+      index+= numAdded
+      if(dealTo == order.length) dealTo = 0
     }
+
+    // promises.map(promise => getCards(promise))
     setPlayers(temp)
+  }
+
+  const getCardsUrlMaker = (player , cards) => {
+    return `https://deckofcardsapi.com/api/deck/${deckID}/pile/${player}/add/?cards=${cards}`
+  }
+
+  const shuffleDeck = () =>{
+    fetch(`https://deckofcardsapi.com/api/deck/${deckID}/shuffle/`)
+      .then( data => data.json())
+      .then( data =>{
+        return drawCards()
+      })
   }
 
   function shuffle(array) {
@@ -60,29 +103,15 @@ function Deck(){
     return array;
   }
 
-  const getCards = () =>{
-    fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
-      .then(data => data.json())
-      .then(data => {
-        console.log(data)
-        console.log(data.cards.map(x=> x.code))
-      })
-
-  }
-
-  const shuffleDeck = () =>{
-    fetch(`https://deckofcardsapi.com/api/deck/${deckID}/shuffle/`)
-      .then(data=> data.json())
-      .then(data => console.log(data))
-
-  }
-
-
   return(
     <div>
-    <button onClick={()=>{distributeCards()}}> distributeCards buttons </button>
-    <button onClick={()=>{getCards()}}> getCards buttons </button>
-    <button onClick={()=>{shuffleDeck()}}> shuffleDeck buttons </button>
+    <button onClick={()=>{distributeCards()}}> distributeCards button </button>
+    <button onClick={()=>{getCards()}}> getCards button </button>
+    <button onClick={()=>{shuffleDeck()}}> shuffleDeck button </button>
+    <button onClick={()=>{pileCheck()}}> pileCheck button </button>
+    <button onClick={()=>{drawCards()}}> draw button </button>
+
+
       Deck
     </div>
   )

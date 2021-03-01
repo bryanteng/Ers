@@ -1,47 +1,20 @@
 import React, { useState, useEffect } from 'react'
+import Player from './player'
+// import { pileCheck, getCards, getCardsUrlMaker } from '../helpers'
 
-function Deck(){
-
-  const [deck, setDeck] = useState(["AC", "AD", "AH", "AS", "2C", "2D", "2H", "2S", "3C", "3D", "3H", "3S", "4C", "4D", "4H", "4S", "5C", "5D", "5H", "5S", "6C", "6D", "6H", "6S", "7C", "7D", "7H", "7S", "8C", "8D", "8H", "8S", "9C", "9D", "9H", "9S", "0C", "0D", "0H", "0S", "JC", "JD", "JH", "JS", "QC", "QD", "QH", "QS", "KC", "KD", "KH", "KS"])
-  const [deckID, setDeckID] = useState("05win676scin")
+function Deck(props){
+  const deckID = props.deckID
+  const order = props.order
+  const [deck, setDeck] = useState([])
   const [players, setPlayers] = useState({"me": "", "you": "", "him": "", "they": "", "their": "", "them": ""})
-  const [order, setOrder] = useState(["me", "you", "him", "they", "their", "them"])
   const [extra, setExtra] = useState(52%order.length)
-  const [currentPlayer, setCurrentPlayer] = useState(1)
-
-  useEffect(()=>{
-    console.log(players)
-    if(players[order[0]] != "") pileCheck()
-
-  },[players,deck])
-
-  const pileCheck = () =>{
-    let runAgain = false
-    let pilesMade
-    return fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/me/list/`)
-    .then(data => data.json())
-    .then(data => {
-      pilesMade = data.piles
-      for(let player of order){
-        if(!pilesMade[player] || !pilesMade[player]["remaining"]){
-          runAgain = true
-          getCards(getCardsUrlMaker(player , players[player]))
-          pileCheck()
-        }
-      }
-    })
-  }
-
-  const getCards = async ( url ) =>{
-      return await fetch(url)
-  }
+  const [currentPlayer, setCurrentPlayer] = useState(0)
 
   const drawCards = () =>{
     fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
       .then(data => data.json())
       .then(data => {
-        let cards = data.cards.map(x=> x.code)
-        setDeck(cards)
+        setDeck(data.cards)
       })
     }
 
@@ -57,27 +30,16 @@ function Deck(){
     let cards
 
     while( index < 52 ){
-
       let player = order[dealTo]
-        // console.log(index,"current index", player, temp)
       numAdded = cardsPerPlayer + (bonus > 0)
-      cards = deck.slice(index, index+numAdded).join()
+      cards = deck.slice(index, index+numAdded)
       temp[player] = cards
-
-      // promises.push(getCardsUrlMaker(player,cards))
-
       bonus -= 1
       dealTo += 1
       index+= numAdded
       if(dealTo == order.length) dealTo = 0
     }
-
-    // promises.map(promise => getCards(promise))
     setPlayers(temp)
-  }
-
-  const getCardsUrlMaker = (player , cards) => {
-    return `https://deckofcardsapi.com/api/deck/${deckID}/pile/${player}/add/?cards=${cards}`
   }
 
   const shuffleDeck = () =>{
@@ -88,33 +50,61 @@ function Deck(){
       })
   }
 
-  function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    while (0 !== currentIndex) {
-
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
+  const resetHand = () =>{
+    let hash = {}
+    for(let i of order){
+      hash[i] = ""
     }
-    return array;
+    setPlayers(hash)
+    setDeck([])
   }
 
   return(
     <div>
     <button onClick={()=>{distributeCards()}}> distributeCards button </button>
-    <button onClick={()=>{getCards()}}> getCards button </button>
-    <button onClick={()=>{shuffleDeck()}}> shuffleDeck button </button>
-    <button onClick={()=>{pileCheck()}}> pileCheck button </button>
-    <button onClick={()=>{drawCards()}}> draw button </button>
+    <button onClick={()=>{shuffleDeck()}}> new deck/shuffle button </button>
+    <button onClick={()=>{resetHand()}}> reset button </button>
 
+    {players[order[0]].length == 0 ? null : order.map(player => <Player player={player} deckID={deckID} hand={players[player]}/>)}
 
-      Deck
     </div>
   )
 }
 
 export default Deck
+// <button onClick={()=>{getCards()}}> getCards button </button>
+// <button onClick={()=>{pileCheck()}}> pileCheck button </button>
+// <button onClick={()=>{drawCards()}}> draw button </button>
+
+// useEffect(()=>{
+//   console.log(players, order)
+//   if(order.length > 0 && players[order[0]].length != 0 ){
+//     let aPlayer = order[0]
+//     let cards = players[aPlayer].map(x=> x.code)
+//     pileCheck(deckID, order, players[aPlayer], cards )
+//   }
+//
+// },[players])
+//
+// const pileCheck = (deckID, order, aPlayer, cards) =>{
+//   let pilesMade
+//   return fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/${aPlayer}/list/`)
+//   .then(data => data.json())
+//   .then(data => {
+//     pilesMade = data.piles
+//     for(let player of order){
+//       if(!pilesMade[player] || !pilesMade[player]["remaining"]){
+//         getCards(getCardsUrlMaker(player, deckID, cards))
+//         pileCheck(deckID, order, aPlayer, cards)
+//       }
+//     }
+//   })
+// }
+//
+// const getCards = async ( url ) =>{
+//     return await fetch(url)
+// }
+//
+// const getCardsUrlMaker = ( player, deckID, cards ) => {
+//   return `https://deckofcardsapi.com/api/deck/${deckID}/pile/${player}/add/?cards=${cards}`
+// }

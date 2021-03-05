@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 
 function Player(props){
 
-  const [ hand, setHand ] = useState({})
+  const [ hand, setHand ] = useState([])
 
   useEffect(()=>{
     setHand(props.hand)
@@ -11,6 +11,8 @@ function Player(props){
     if( props.hand.length != 0) {
       let cards = props.hand.map(x=> x.code)
       pileCheck(props.deckID, props.player, cards )
+    }else{
+      setHand([])
     }
   },[props.hand])
 
@@ -35,10 +37,10 @@ function Player(props){
 
   return(
     <div className="player">
-      {props.hand.length == 0 ? null :
+      {hand.length == 0 ? <div>{props.player}, no cards left</div> :
         <div>
-        {props.player}, hand:{props.hand[0].code}
-        <img src={props.hand[0].image} alt="new" />
+        {props.player}, hand:{hand[0].code}
+        <img src={hand[0].image} id={props.player} onClick={(event)=>props.playCard(event)}alt="new" />
         </div>
       }
     </div>

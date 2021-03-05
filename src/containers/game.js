@@ -8,7 +8,6 @@ function Game(){
   const [deckID, setDeckID] = useState("05win676scin")
 
 
-
   function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 

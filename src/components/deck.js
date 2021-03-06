@@ -10,6 +10,8 @@ function Deck(props){
   const [extra, setExtra] = useState(52%order.length)
   const [currentPlayer, setCurrentPlayer] = useState(0)
   const [discardPile, setDiscardPile] = useState([])
+  const [winner, setWinner] = useState("")
+  const [aceOrFace, setAceOrFace] = useState(false)
 
   const drawCards = () =>{
     fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)

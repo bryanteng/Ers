@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Player from './player'
-// import { pileCheck, getCards, getCardsUrlMaker } from '../helpers'
+import { isSlappable } from '../helpers'
 
 function Deck(props){
   const deckID = props.deckID
@@ -12,6 +12,12 @@ function Deck(props){
   const [discardPile, setDiscardPile] = useState([])
   const [winner, setWinner] = useState("")
   const [aceOrFace, setAceOrFace] = useState(false)
+  const [slappable, setSlappable] = useState(false)
+
+  useEffect(()=>{
+    setSlappable(isSlappable(discardPile))
+    console.log(isSlappable(discardPile), slappable)
+  },[discardPile])
 
   const drawCards = () =>{
     fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
@@ -63,6 +69,7 @@ function Deck(props){
   }
 
   const playCard = (event) =>{
+    setSlappable(false)
     let player = event.target.id
     if(event.target.id == order[currentPlayer]){
       let index = Math.floor(Math.random()*players[player].length)

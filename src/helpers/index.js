@@ -24,6 +24,7 @@ export const getCardsUrlMaker = ( player, deckID, cards ) => {
 }
 
 export function isSlappable(array){
+  if(array.length == 0) return false
   let len = array.length
 
   //check top if JOKER
@@ -70,7 +71,6 @@ export function isSlappable(array){
       let revConsecutive = "1312111098765432113121110987654321"
       let fourth = cardValue(array[len - 4].value)
       let order = [first, second, third, fourth].join("")
-      console.log(order)
       if(consecutive.includes(order) || revConsecutive.includes(order)) return "FOUR IN A ROW"
     }
   }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import '../styles/navbar.css';
 
-function Navbar({user}){
+function Navbar({loggedIn, setLoggedIn, user}){
 
   return(
     <ul className="navbar">

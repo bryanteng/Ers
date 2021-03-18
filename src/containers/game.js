@@ -1,12 +1,9 @@
 import React, { useState } from 'react'
 import Deck from '../components/deck'
 
-function Game(){
+function Game({deckID, order}){
 
-  const [order, setOrder] = useState(["me", "you", "him", "they", "their", "them"])
   const [gameStarted, setGameStarted] = useState(false)
-  const [deckID, setDeckID] = useState("05win676scin")
-
 
   function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -24,8 +21,8 @@ function Game(){
   }
 
   return(
-    <div>
-      <div>Game</div>
+    <div className="game">
+      <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
       <Deck order={order} deckID={deckID}/>
     </div>
   )

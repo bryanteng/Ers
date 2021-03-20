@@ -2,14 +2,10 @@ import React, { useState, useEffect } from 'react'
 import Player from './player'
 import { isSlappable } from '../helpers'
 
-function Deck(props){
-  const deckID = props.deckID
-  const order = props.order
+function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, user}){
   const [deck, setDeck] = useState([])
-  const [players, setPlayers] = useState({"me": "", "you": "", "him": "", "they": "", "their": "", "them": ""})
   const [extra, setExtra] = useState(52%order.length)
   const [currentPlayer, setCurrentPlayer] = useState(0)
-  const [discardPile, setDiscardPile] = useState([])
   const [winner, setWinner] = useState("")
   const [aceOrFace, setAceOrFace] = useState(false)
   const [slappable, setSlappable] = useState(false)
@@ -59,10 +55,10 @@ function Deck(props){
       })
   }
 
-  const resetHand = () =>{
+  const resetHands = () =>{
     let hash = {}
     for(let i of order){
-      hash[i] = ""
+      hash[i] = []
     }
     setPlayers(hash)
     setDeck([])
@@ -71,18 +67,19 @@ function Deck(props){
   const playCard = (event) =>{
     setSlappable(false)
     let player = event.target.id
-    if(event.target.id == order[currentPlayer]){
+    if(user == event.target.id && event.target.id == order[currentPlayer]){
       let index = Math.floor(Math.random()*players[player].length)
       let card = players[player][index]
       let cardCode = card.code
-      fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/discard/add/?cards=${cardCode}`)
-      .then(data => data.json())
-      .then(data=>{
-        setDiscardPile([...discardPile, card])
-        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
-        setPlayers({...players, player: players[player].splice(index,1)})
-        console.log(discardPile, card)
-      })
+      players[user].splice(index,1)
+      setDiscardPile([...discardPile, card])
+      setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
+      setPlayers(players)
+      // fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/discard/add/?cards=${cardCode}`)
+      // .then(data => data.json())
+      // .then(data=>{
+      //
+      // })
     }
   }
 
@@ -90,9 +87,9 @@ function Deck(props){
     <div>
     <button onClick={()=>{distributeCards()}}> distributeCards button </button>
     <button onClick={()=>{shuffleDeck()}}> new deck/shuffle button </button>
-    <button onClick={()=>{resetHand()}}> reset button </button>
+    <button onClick={()=>{resetHands()}}> reset button </button>
 
-    {order.map(player => <Player player={player} deckID={deckID} hand={players[player]} playCard={playCard}/>)}
+    {order.map(player => <Player player={player} deckID={deckID} playersCards={players[player]} playCard={playCard}/>)}
 
     </div>
   )

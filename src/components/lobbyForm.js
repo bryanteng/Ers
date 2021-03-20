@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function LobbyForm({getDeck, deckID, setDeckID}){
+function LobbyForm({getDeck, deckID, setDeckID, getNewDeck}){
 
   return(
     <div className="lobby">
@@ -13,7 +13,7 @@ function LobbyForm({getDeck, deckID, setDeckID}){
     </form>
 
     <label> Create a new lobby </label>
-    <button onClick={()=>console.log("lol")}> lol button </button>
+    <button onClick={(event)=>getNewDeck(event)}> lol button </button>
 
     </div>
   )

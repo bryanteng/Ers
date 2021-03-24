@@ -11,9 +11,8 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
   const [slappable, setSlappable] = useState(false)
 
   useEffect(()=>{
-    setSlappable(isSlappable(discardPile))
-    console.log(isSlappable(discardPile), slappable)
-  },[discardPile])
+    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer)
+  },[discardPile, players])
 
   const drawCards = () =>{
     fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
@@ -66,15 +65,38 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
 
   const playCard = (event) =>{
     setSlappable(false)
+    setWinner("")
+    setAceOrFace(false)
+
     let player = event.target.id
-    if(user == event.target.id && event.target.id == order[currentPlayer]){
+    // if(user == event.target.id && event.target.id == order[currentPlayer]){
+
+    if(event.target.id == order[currentPlayer]){
       let index = Math.floor(Math.random()*players[player].length)
       let card = players[player][index]
       let cardCode = card.code
+      let cardValue =  cardCode[0]
+      let currentAOF = "JQKA".includes(cardValue)
+
+      //takes the random card out of the players hand and puts it into the discard pile, then sets the players hands.
       players[user].splice(index,1)
       setDiscardPile([...discardPile, card])
-      setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
+      setSlappable(isSlappable(discardPile))
       setPlayers(players)
+
+      //if the previous card was an AOF AND the card just played is an AOF - go to next player
+      if(aceOrFace && currentAOF){
+        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
+      }else if(aceOrFace && !currentAOF){ // if the previous card was AOF and the card just played is not AOF - the person that went before the current player is set to be the winner and then the winner is set to play again. They could also play a card again and risk losing the pile.
+        let winner = currentPlayer - 1 < 0 ? order.length - 1 : currentPlayer - 1
+        setWinner(order[winner])
+        setCurrentPlayer(winner)
+      }
+
+      if(currentAOF){
+        setAceOrFace(true)
+      }
+
       // fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/discard/add/?cards=${cardCode}`)
       // .then(data => data.json())
       // .then(data=>{

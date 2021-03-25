@@ -11,8 +11,9 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
   const [slappable, setSlappable] = useState(false)
 
   useEffect(()=>{
+    setSlappable(isSlappable(discardPile))
     console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer)
-  },[discardPile, players])
+  },[currentPlayer])
 
   const drawCards = () =>{
     fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
@@ -77,17 +78,23 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
       let cardCode = card.code
       let cardValue =  cardCode[0]
       let currentAOF = "JQKA".includes(cardValue)
-
+      let temp = players
+      temp[user].splice(index,1)
       //takes the random card out of the players hand and puts it into the discard pile, then sets the players hands.
-      players[user].splice(index,1)
       setDiscardPile([...discardPile, card])
-      setSlappable(isSlappable(discardPile))
-      setPlayers(players)
+      setPlayers(temp)
 
-      //if the previous card was an AOF AND the card just played is an AOF - go to next player
-      if(aceOrFace && currentAOF){
+      // if the card just played is an AOF - go to next player
+      if( currentAOF ){
         setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
-      }else if(aceOrFace && !currentAOF){ // if the previous card was AOF and the card just played is not AOF - the person that went before the current player is set to be the winner and then the winner is set to play again. They could also play a card again and risk losing the pile.
+      }
+      // if the previous card was not AOF and the current is not AOF - go to next player
+      else if(!aceOrFace && !currentAOF){
+        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
+
+      }
+      // if the previous card was AOF and the card just played is not AOF - the person that went before the current player is set to be the winner and then the winner is set to play again. They could also play a card again and risk losing the pile. If the pile is slappable, they could also lose said pile to the slapper
+      else if(aceOrFace && !currentAOF){
         let winner = currentPlayer - 1 < 0 ? order.length - 1 : currentPlayer - 1
         setWinner(order[winner])
         setCurrentPlayer(winner)
@@ -95,6 +102,7 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
 
       if(currentAOF){
         setAceOrFace(true)
+        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
       }
 
       // fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/discard/add/?cards=${cardCode}`)
@@ -105,11 +113,16 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
     }
   }
 
+  const checkState = () =>{
+    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer)
+  }
+
   return(
     <div>
     <button onClick={()=>{distributeCards()}}> distributeCards button </button>
     <button onClick={()=>{shuffleDeck()}}> new deck/shuffle button </button>
     <button onClick={()=>{resetHands()}}> reset button </button>
+    <button onClick={()=>{checkState()}}> check state button </button>
 
     {order.map(player => <Player player={player} deckID={deckID} playersCards={players[player]} playCard={playCard}/>)}
 

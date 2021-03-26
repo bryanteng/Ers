@@ -9,29 +9,28 @@ function Player({player, deckID, playersCards, playCard}){
     setHand(playersCards)
     // getCards(player, deckID)
     if(playersCards.length > 0){
-      let cards = playersCards.map(x=> x.code)
+      let cards = playersCards.map(x=> x.code).join()
       pileCheck(deckID, player, cards)
     }
 
   },[playersCards])
 
 
-  const pileCheck = (deckID, aPlayer, cards) =>{
+  const pileCheck = (deckID, aPlayer, cardsString) =>{
     let pilesMade
     return fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/${aPlayer}/list/`)
     .then(data => data.json())
     .then(data => {
       pilesMade = data.piles
         if(!pilesMade[aPlayer] || !pilesMade[aPlayer]["remaining"]){
-          let cards = cards.map(x=> x.code).join()
-          getCards(aPlayer, deckID, cards)
-          pileCheck(deckID, aPlayer, cards)
+          getCards(aPlayer, deckID, cardsString)
+          pileCheck(deckID, aPlayer, cardsString)
       }
     })
   }
 
-  const getCards = async ( player, deckID, cards ) =>{
-    return await fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/${player}/add/?cards=${cards}`)
+  const getCards = async ( player, deckID, cardsString ) =>{
+    return await fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/${player}/add/?cards=${cardsString}`)
   }
 
   return(

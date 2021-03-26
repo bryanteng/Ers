@@ -1,15 +1,17 @@
 import './App.css';
 import React, { useState, useEffect, Fragment } from 'react'
 
+import {Switch, BrowserRouter as Router, Route } from 'react-router-dom'
+
+import {useSelector, useDispatch} from 'react-redux'
+import allActions from './actions'
+
 import Navbar from './components/navbar'
 import Homepage from './containers/homepage'
 
 import Rules from './containers/rules'
 import Game from './containers/game'
 import LobbyForm from './components/lobbyForm'
-
-
-import {Switch, BrowserRouter as Router, Route } from 'react-router-dom'
 
 // import NewPlayerInput from './components/newPlayerInput'
 
@@ -23,6 +25,21 @@ function App() {
   const [players, setPlayers] = useState({})
   const [isGameStarted, setIsGameStarted] = useState(false)
 
+  const currentUser = useSelector(state => state.currentUser)
+
+  const dispatch = useDispatch()
+  const userObj = {name: "Rei"}
+
+  useEffect(() => {
+    dispatch(allActions.userActions.setUser(userObj))
+    console.log(currentUser,"current")
+  }, [dispatch])
+
+
+  const userButton = () =>{
+    // dispatch(allActions.userActions.setUser(temp))
+    console.log(currentUser,"current")
+  }
 
   useEffect(()=>{
     console.log(players)
@@ -109,6 +126,8 @@ function App() {
   console.log(players, "players")
   return (
     <div className="App">
+    <button onClick={()=>userButton()}> user button </button>
+
     {loggedIn ?
     <Fragment>
       <Navbar user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />

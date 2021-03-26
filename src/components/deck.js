@@ -12,8 +12,8 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
 
   useEffect(()=>{
     setSlappable(isSlappable(discardPile))
-    console.log(isSlappable(discardPile), slappable)
-  },[discardPile])
+    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer)
+  },[currentPlayer])
 
   const drawCards = () =>{
     fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
@@ -66,21 +66,50 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
 
   const playCard = (event) =>{
     setSlappable(false)
+    setWinner("")
+    setAceOrFace(false)
+
     let player = event.target.id
-    if(user == event.target.id && event.target.id == order[currentPlayer]){
+    // if(user == event.target.id && event.target.id == order[currentPlayer]){
+
+    if(event.target.id == order[currentPlayer]){
       let index = Math.floor(Math.random()*players[player].length)
       let card = players[player][index]
       let cardCode = card.code
-      players[user].splice(index,1)
+      let cardValue =  cardCode[0]
+      let currentAOF = "JQKA".includes(cardValue)
+      let temp = players
+      temp[user].splice(index,1)
+      //takes the random card out of the players hand and puts it into the discard pile, then sets the players hands.
       setDiscardPile([...discardPile, card])
-      setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
-      setPlayers(players)
-      // fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/discard/add/?cards=${cardCode}`)
-      // .then(data => data.json())
-      // .then(data=>{
-      //
-      // })
+      setPlayers(temp)
+
+      // if the card just played is an AOF - go to next player
+      if( currentAOF ){
+        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
+      }
+      // if the previous card was not AOF and the current is not AOF - go to next player
+      else if(!aceOrFace && !currentAOF){
+        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
+
+      }
+      // if the previous card was AOF and the card just played is not AOF - the person that went before the current player is set to be the winner and then the winner is set to play again. They could also play a card again and risk losing the pile. If the pile is slappable, they could also lose said pile to the slapper
+      else if(aceOrFace && !currentAOF){
+        let winner = currentPlayer - 1 < 0 ? order.length - 1 : currentPlayer - 1
+        setWinner(order[winner])
+        setCurrentPlayer(winner)
+      }
+
+      if(currentAOF){
+        setAceOrFace(true)
+        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
+      }
+
     }
+  }
+
+  const checkState = () =>{
+    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer)
   }
 
   return(
@@ -88,6 +117,7 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
     <button onClick={()=>{distributeCards()}}> distributeCards button </button>
     <button onClick={()=>{shuffleDeck()}}> new deck/shuffle button </button>
     <button onClick={()=>{resetHands()}}> reset button </button>
+    <button onClick={()=>{checkState()}}> check state button </button>
 
     {order.map(player => <Player player={player} deckID={deckID} playersCards={players[player]} playCard={playCard}/>)}
 

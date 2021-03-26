@@ -105,11 +105,6 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
         setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
       }
 
-      // fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/discard/add/?cards=${cardCode}`)
-      // .then(data => data.json())
-      // .then(data=>{
-      //
-      // })
     }
   }
 

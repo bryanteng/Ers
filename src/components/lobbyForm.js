@@ -8,8 +8,6 @@ function LobbyForm({username}){
   const { deckID, order, isInLobby } = currentGame
   const dispatch = useDispatch()
 
-  console.log(currentGame,"lobby")
-
   async function getDeck(event, deck){
     event.preventDefault()
     return await fetch(`http://localhost:3000/gameroom/${deck}`, {

@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../styles/homepage.css';
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from '../actions'
 
-function Homepage({loggedIn, setLoggedIn, user, setUser}){
+function Homepage(){
 
   const currentUser = useSelector(state => state.currentUser)
   const dispatch = useDispatch()
+
+  useEffect(function updateTitle() {
+    document.title = "Welcome " + currentUser.username + ", ERS";
+  },[currentUser.username]);
 
   return(
     <div className="homepage">

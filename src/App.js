@@ -1,15 +1,14 @@
 import './App.css';
 import React, { useState, useEffect, Fragment } from 'react'
-
 import {Switch, BrowserRouter as Router, Route } from 'react-router-dom'
 
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from './actions'
 
-import Navbar from './components/navbar'
 import Homepage from './containers/homepage'
-
+import Navbar from './components/navbar'
 import Rules from './containers/rules'
+
 import Game from './containers/game'
 import LobbyForm from './components/lobbyForm'
 
@@ -17,38 +16,35 @@ import LobbyForm from './components/lobbyForm'
 
 function App() {
 
-  // const [user, setUser] = useState("btt")
-  // const [loggedIn, setLoggedIn] = useState(false)
   const dispatch = useDispatch()
   const currentUser = useSelector(state => state.currentUser)
   const currentGame = useSelector(state => state.currentGame)
   const { username, loggedIn } = currentUser
-  const { deckID, order, isInLobby } = currentGame
+  const { deckID, order, isInLobby, players, isGameStarted } = currentGame
 
+  // const [user, setUser] = useState("btt")
+  // const [loggedIn, setLoggedIn] = useState(false)
   // const [order, setOrder] = useState([])
   // const [deckID, setDeckID] = useState("") //useState("05win676scin")
-  const [isInGame, setIsInGame] = useState(false)
-  const [players, setPlayers] = useState({})
-  const [isGameStarted, setIsGameStarted] = useState(false)
+  // const [isInGame, setIsInGame] = useState(false)
+  // const [players, setPlayers] = useState({})
+  // const [isGameStarted, setIsGameStarted] = useState(false)
 
   useEffect(()=>{
     console.log(players)
   },[players])
 
   const startGame = () =>{
-    let player_hash = {}
-    for(let i of order){
-      player_hash[i] = []
-    }
-    setPlayers(player_hash)
-    setIsGameStarted(true)
+    dispatch(allActions.gameActions.startGame())
+    // let player_hash = {}
+    // for(let i of order){
+    //   player_hash[i] = []
+    // }
+    // setPlayers(player_hash)
+    // setIsGameStarted(true)
   }
 
-  useEffect(function updateTitle() {
-    document.title = "Welcome " + username + ", ERS";
-  },[username]);
-
-  console.log(players, "players")
+  console.log(currentGame,"lobby")
   return (
     <div className="App">
 
@@ -61,7 +57,7 @@ function App() {
         <LobbyForm username={username} />
         : isGameStarted ?
       <div>
-       <Game deckID={deckID} order={order} players={players} setPlayers={setPlayers} />
+       <Game deckID={deckID} order={order} players={players} />
       </div>  :
       <div>
         <div>Players in the lobby:</div>

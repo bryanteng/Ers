@@ -12,7 +12,37 @@ const setDeckID = (deckID) => {
     }
 }
 
+const startGame = () => {
+  return {
+    type: "START_GAME"
+  }
+}
+
+const gameOver = () => {
+  return {
+    type: "GAME_OVER"
+  }
+}
+
+const setPlayers = (players) => {
+  return {
+    type: "SET_PLAYERS",
+    payload: players
+  }
+}
+
+const setDiscardPile = (discardPile) => {
+  return {
+    type: "SET_DISCARD_PILE",
+    payload: discardPile
+  }
+}
+
 export default {
     setOrder,
-    setDeckID
+    setDeckID,
+    startGame,
+    gameOver,
+    setPlayers,
+    setDiscardPile
 }

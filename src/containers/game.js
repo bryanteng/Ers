@@ -3,41 +3,27 @@ import Deck from '../components/deck'
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from '../actions'
 
-function Game({deckID, order, players, setPlayers, user}){
-
+function Game(){
   // const [gameStarted, setGameStarted] = useState(false)
-  const [discardPile, setDiscardPile] = useState([])
-
+  // const [discardPile, setDiscardPile] = useState([])
+  const dispatch = useDispatch()
   const currentUser = useSelector(state => state.currentUser)
-  const { username, loggedIn } = currentUser
-
-  function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    while (0 !== currentIndex) {
-
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-    return array;
-  }
+  const currentGame = useSelector(state => state.currentGame)
+  const { username } = currentUser
+  const { deckID, order, players, discardPile } = currentGame
 
   const claimPile = () => {
     let temp = players
     temp[username] = temp[username].concat(discardPile)
-    setPlayers(temp)
-    setDiscardPile([])
+    dispatch(allActions.gameActions.setPlayers(temp))
+    dispatch(allActions.gameActions.setDiscardPile([]))
     console.log(players,username)
   }
 
   return(
     <div className="game">
       <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
-      {order.length > 0 ? <Deck order={order} deckID={deckID} players={players} setPlayers={setPlayers} discardPile={discardPile} setDiscardPile={setDiscardPile} username={username}/>
+      {order.length > 0 ? <Deck />
     : null }
 
     <button onClick={()=>claimPile()}>claim pile </button>
@@ -46,3 +32,18 @@ function Game({deckID, order, players, setPlayers, user}){
 }
 
 export default Game
+
+// function shuffle(array) {
+//   var currentIndex = array.length, temporaryValue, randomIndex;
+//
+//   while (0 !== currentIndex) {
+//
+//     randomIndex = Math.floor(Math.random() * currentIndex);
+//     currentIndex -= 1;
+//
+//     temporaryValue = array[currentIndex];
+//     array[currentIndex] = array[randomIndex];
+//     array[randomIndex] = temporaryValue;
+//   }
+//   return array;
+// }

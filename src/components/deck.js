@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import Player from './player'
 import { isSlappable } from '../helpers'
+import {useSelector, useDispatch} from 'react-redux'
+import allActions from '../actions'
 
-function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, user}){
+function Deck(){
+  const dispatch = useDispatch()
+  const currentUser = useSelector(state => state.currentUser)
+  const { username } = currentUser
+  const currentGame = useSelector(state => state.currentGame)
+  const { deckID, order, players, discardPile } = currentGame
+
   const [deck, setDeck] = useState([])
   const [extra, setExtra] = useState(52%order.length)
   const [currentPlayer, setCurrentPlayer] = useState(0)
   const [winner, setWinner] = useState("")
   const [aceOrFace, setAceOrFace] = useState(false)
   const [slappable, setSlappable] = useState(false)
+
 
   useEffect(()=>{
     setSlappable(isSlappable(discardPile))
@@ -44,7 +53,7 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
       index+= numAdded
       if(dealTo == order.length) dealTo = 0
     }
-    setPlayers(temp)
+    dispatch(allActions.gameActions.setPlayers(temp))
   }
 
   const shuffleDeck = () =>{
@@ -60,7 +69,7 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
     for(let i of order){
       hash[i] = []
     }
-    setPlayers(hash)
+    dispatch(allActions.gameActions.setPlayers(hash))
     setDeck([])
   }
 
@@ -79,10 +88,10 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
       let cardValue =  cardCode[0]
       let currentAOF = "JQKA".includes(cardValue)
       let temp = players
-      temp[user].splice(index,1)
+      temp[username].splice(index,1)
       //takes the random card out of the players hand and puts it into the discard pile, then sets the players hands.
-      setDiscardPile([...discardPile, card])
-      setPlayers(temp)
+      dispatch(allActions.gameActions.setDiscardPile([...discardPile, card]))
+      dispatch(allActions.gameActions.setPlayers(temp))
 
       // if the card just played is an AOF - go to next player
       if( currentAOF ){
@@ -104,7 +113,6 @@ function Deck({order, deckID, players, setPlayers, discardPile, setDiscardPile, 
         setAceOrFace(true)
         setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
       }
-
     }
   }
 

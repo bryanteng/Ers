@@ -12,8 +12,15 @@ const setLoggedIn = (loggedIn) => {
     }
 }
 
+const setHost = (isHostBoolean) =>{
+    return {
+      type: "SET_HOST",
+      payload: isHostBoolean
+    }
+}
 
 export default {
     setUser,
-    setLoggedIn
+    setLoggedIn,
+    setHost
 }

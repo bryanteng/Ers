@@ -46,6 +46,9 @@ function Player({player, deckID, playersCards, playCard}){
 }
 
 export default Player
+Player.defaultProps = {
+  playersCards: []
+}
 
 // const pileCheck = (deckID, order, player, cards) =>{
 // const getCards = async ( url ) =>{

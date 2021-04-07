@@ -1,37 +1,51 @@
-const setOrder = (order) => {
+export const setOrder = (order) => {
     return {
         type: "SET_ORDER",
         payload: order
     }
 }
 
-const setDeckID = (deckID) => {
+export const setDeckID = (deckID) => {
     return {
         type: "SET_DECKID",
         payload: deckID
     }
 }
 
-const startGame = () => {
+export const setCurrentPlayer = (currentPlayer) => {
+  return {
+    type: "SET_CURRENT_PLAYER",
+    payload: currentPlayer
+  }
+}
+
+export const setGameState = (state) => {
+  return {
+    type: "SET_GAME_STATE",
+    payload: state
+  }
+}
+
+export const startGame = () => {
   return {
     type: "START_GAME"
   }
 }
 
-const gameOver = () => {
+export const gameOver = () => {
   return {
     type: "GAME_OVER"
   }
 }
 
-const setPlayers = (players) => {
+export const setPlayers = (players) => {
   return {
     type: "SET_PLAYERS",
     payload: players
   }
 }
 
-const setDiscardPile = (discardPile) => {
+export const setDiscardPile = (discardPile) => {
   return {
     type: "SET_DISCARD_PILE",
     payload: discardPile
@@ -41,6 +55,8 @@ const setDiscardPile = (discardPile) => {
 export default {
     setOrder,
     setDeckID,
+    setCurrentPlayer,
+    setGameState,
     startGame,
     gameOver,
     setPlayers,

@@ -1,4 +1,4 @@
-const currentUser = (state = {username:"", loggedIn:false}, action) => {
+const currentUser = (state = {username:"", loggedIn:false, isHost: false}, action) => {
     switch(action.type){
         case "SET_USER":
             return {
@@ -11,6 +11,12 @@ const currentUser = (state = {username:"", loggedIn:false}, action) => {
               ...state,
               loggedIn: action.payload
             }
+
+        case "SET_HOST":
+          return{
+            ...state,
+            isHost: action.payload
+          }
 
         default: return state
     }

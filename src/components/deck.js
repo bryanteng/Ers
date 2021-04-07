@@ -3,17 +3,18 @@ import Player from './player'
 import { isSlappable } from '../helpers'
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from '../actions'
+import { setCurrentPlayer } from '../actions/gameActions'
 
 function Deck(){
   const dispatch = useDispatch()
   const currentUser = useSelector(state => state.currentUser)
   const { username } = currentUser
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, order, players, discardPile } = currentGame
+  const { deckID, order, players, discardPile, currentPlayer, isGameStarted } = currentGame
 
   const [deck, setDeck] = useState([])
   const [extra, setExtra] = useState(52%order.length)
-  const [currentPlayer, setCurrentPlayer] = useState(0)
+  // const [currentPlayer, setCurrentPlayer] = useState(0)
   const [winner, setWinner] = useState("")
   const [aceOrFace, setAceOrFace] = useState(false)
   const [slappable, setSlappable] = useState(false)
@@ -32,7 +33,7 @@ function Deck(){
       })
     }
 
-  const distributeCards = () =>{
+  const distributeCards = () => {
 
     let temp = Object.assign({}, players)
     let index = 0
@@ -40,7 +41,6 @@ function Deck(){
     let bonus = extra
     let dealTo = currentPlayer
     let numAdded
-    let promises = []
     let cards
 
     while( index < 52 ){

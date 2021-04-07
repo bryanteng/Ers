@@ -44,7 +44,6 @@ function App() {
     // setIsGameStarted(true)
   }
 
-  console.log(currentGame,"lobby")
   return (
     <div className="App">
 
@@ -54,18 +53,18 @@ function App() {
       <Rules />
 
       {!isInLobby ?
-        <LobbyForm username={username} />
-        : isGameStarted ?
-      <div>
-       <Game deckID={deckID} order={order} players={players} />
-      </div>  :
-      <div>
-        <div>Players in the lobby:</div>
-        <ul>
-          {order.map(player=> <li>{player}</li>)}
-        </ul>
-        <button onClick={()=>startGame()}> start game </button>
-      </div>
+        <LobbyForm username={username} /> :
+
+        isGameStarted ?
+        <Game />
+        :
+        <div>
+          <div>Players in the lobby:</div>
+          <ul>
+            {order.map(player=> <li>{player}</li>)}
+          </ul>
+          <button onClick={()=>startGame()}> start game </button>
+        </div>
      }
 
     </Fragment>

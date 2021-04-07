@@ -34,18 +34,7 @@ const currentGame = (state = {order:[], deckID:"", players:{}, currentPlayer: 0,
           }
 
         case "SET_GAME_STATE":
-          fetch(`http://localhost:3000/gameroom/${state.deckID}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(action.payload),
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Game state:', data);
-            return Object.assign(state, data)
-          })
+          postUpdate(state, action.payload)
 
         case "GAME_OVER":
             return {
@@ -54,13 +43,25 @@ const currentGame = (state = {order:[], deckID:"", players:{}, currentPlayer: 0,
             }
 
         case "START_GAME":
-            return {
-              ...state,
-              isGameStarted: true
-            }
+          postUpdate(state, {isGameStarted: true})
 
         default: return state
     }
 }
 
 export default currentGame;
+
+function postUpdate(state, payload){
+  fetch(`http://localhost:3000/gameroom/${state.deckID}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Game state:', data);
+    return Object.assign(state, data)
+  })
+}

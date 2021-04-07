@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from '../actions'
 import { ActionCableConsumer } from 'react-actioncable-provider'
-import { setGameState } from '../actions/gameActions'
+import { setGameState, setDeckID } from '../actions/gameActions'
 
 function LobbyForm({username}){
 
@@ -53,7 +53,7 @@ function LobbyForm({username}){
     .then(data =>{
       if( data === null || data.status === 404 ) return alert("Lobby doesn't exist")
       let temp_deck_id = data.deck_id
-      dispatch(allActions.gameActions.setDeckID(temp_deck_id))
+      dispatch(setDeckID(temp_deck_id))
       fetch(`http://localhost:3000/gamerooms`, {
         method: 'POST',
         headers: {
@@ -78,7 +78,7 @@ function LobbyForm({username}){
 
     <form onSubmit={(event)=>getDeck(event, deckID)}>
       <label> Enter lobby code </label>
-      <input value={deckID} onChange={(event)=>dispatch(allActions.gameActions.setDeckID(event.target.value))} />
+      <input value={deckID} onChange={(event)=>dispatch(setDeckID(event.target.value))} />
       <button onClick={(event)=>getDeck(event,deckID)}>find lobby </button>
     </form>
 

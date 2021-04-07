@@ -59,11 +59,16 @@ function App() {
         <Game />
         :
         <div>
+          <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
           <div>Players in the lobby:</div>
           <ul>
             {order.map(player=> <li>{player}</li>)}
           </ul>
-          <button onClick={()=>startGame()}> start game </button>
+          {order.length > 1 ? <button onClick={()=>startGame()}> start game </button> :
+          <div>
+            <div>invite friends to join to begin playing</div>
+          </div>
+          }
         </div>
      }
 

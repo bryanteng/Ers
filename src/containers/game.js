@@ -23,9 +23,7 @@ function Game(){
   console.log(currentGame, "in game")
   return(
     <div className="game">
-      <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
       {isGameStarted ? <Deck /> : null }
-
       <button onClick={()=>claimPile()}>claim pile </button>
     </div>
   )

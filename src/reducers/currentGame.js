@@ -1,4 +1,6 @@
-const currentGame = (state = {order:[], deckID:"", players:{}, isInLobby:false, isGameStarted: false, roundWinner:"", gameWinner:"", deck:[], discardPile: []}, action) => {
+import { API_ROOT } from '../helpers'
+
+const currentGame = (state = {order:[], deckID:"", players:{}, currentPlayer: 0, isInLobby:false, isGameStarted: false, roundWinner:"", gameWinner:"", deck:[], discardPile: []}, action) => {
     switch(action.type){
         case "SET_ORDER":
             return {
@@ -6,6 +8,7 @@ const currentGame = (state = {order:[], deckID:"", players:{}, isInLobby:false, 
                 order: action.payload,
                 isInLobby: true
             }
+
         case "SET_DECKID":
             return {
                 ...state,
@@ -24,16 +27,14 @@ const currentGame = (state = {order:[], deckID:"", players:{}, isInLobby:false, 
             discardPile: action.payload
           }
 
-        case "START_GAME":
-            let player_hash = {}
-            for(let i of state.order){
-              player_hash[i] = []
-            }
-            return {
-              ...state,
-              players: player_hash,
-              isGameStarted: true
-            }
+        case "SET_CURRENT_PLAYER":
+          return {
+            ...state,
+            currentPlayer: action.payload
+          }
+
+        case "SET_GAME_STATE":
+          postUpdate(state, action.payload)
 
         case "GAME_OVER":
             return {
@@ -41,8 +42,26 @@ const currentGame = (state = {order:[], deckID:"", players:{}, isInLobby:false, 
               isGameStarted: false
             }
 
+        case "START_GAME":
+          postUpdate(state, {isGameStarted: true})
+
         default: return state
     }
 }
 
 export default currentGame;
+
+function postUpdate(state, payload){
+  fetch(`http://localhost:3000/gameroom/${state.deckID}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Game state:', data);
+    return Object.assign(state, data)
+  })
+}

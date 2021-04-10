@@ -3,17 +3,18 @@ import Player from './player'
 import { isSlappable } from '../helpers'
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from '../actions'
+import { setGameState, setCurrentPlayer } from '../actions/gameActions'
 
 function Deck(){
   const dispatch = useDispatch()
   const currentUser = useSelector(state => state.currentUser)
   const { username } = currentUser
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, order, players, discardPile } = currentGame
+  const { deckID, order, players, discardPile, currentPlayer, isGameStarted } = currentGame
 
   const [deck, setDeck] = useState([])
   const [extra, setExtra] = useState(52%order.length)
-  const [currentPlayer, setCurrentPlayer] = useState(0)
+  // const [currentPlayer, setCurrentPlayer] = useState(0)
   const [winner, setWinner] = useState("")
   const [aceOrFace, setAceOrFace] = useState(false)
   const [slappable, setSlappable] = useState(false)
@@ -32,7 +33,7 @@ function Deck(){
       })
     }
 
-  const distributeCards = () =>{
+  const distributeCards = () => {
 
     let temp = Object.assign({}, players)
     let index = 0
@@ -40,7 +41,6 @@ function Deck(){
     let bonus = extra
     let dealTo = currentPlayer
     let numAdded
-    let promises = []
     let cards
 
     while( index < 52 ){
@@ -53,7 +53,7 @@ function Deck(){
       index+= numAdded
       if(dealTo == order.length) dealTo = 0
     }
-    dispatch(allActions.gameActions.setPlayers(temp))
+    dispatch(setGameState({players: temp}))
   }
 
   const shuffleDeck = () =>{
@@ -69,50 +69,46 @@ function Deck(){
     for(let i of order){
       hash[i] = []
     }
-    dispatch(allActions.gameActions.setPlayers(hash))
+    dispatch(setGameState({players: hash}))
     setDeck([])
   }
 
   const playCard = (event) =>{
     setSlappable(false)
-    setWinner("")
     setAceOrFace(false)
 
     let player = event.target.id
     // if(user == event.target.id && event.target.id == order[currentPlayer]){
-
     if(event.target.id == order[currentPlayer]){
+      //takes the random card out of the players hand and puts it into the discard pile, then sets the players hands. AOF rules to determine next turn
       let index = Math.floor(Math.random()*players[player].length)
       let card = players[player][index]
       let cardCode = card.code
       let cardValue =  cardCode[0]
       let currentAOF = "JQKA".includes(cardValue)
       let temp = players
+      let turn
       temp[username].splice(index,1)
-      //takes the random card out of the players hand and puts it into the discard pile, then sets the players hands.
-      dispatch(allActions.gameActions.setDiscardPile([...discardPile, card]))
-      dispatch(allActions.gameActions.setPlayers(temp))
+      // dispatch(setGameState({discardPile: [...discardPile, card], players: temp }))
+      // dispatch(allActions.gameActions.setDiscardPile([...discardPile, card]))
+      // dispatch(allActions.gameActions.setPlayers(temp))
 
       // if the card just played is an AOF - go to next player
       if( currentAOF ){
-        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
+        setAceOrFace(true)
+        turn = currentPlayer+1 == order.length ? 0 : currentPlayer + 1
       }
       // if the previous card was not AOF and the current is not AOF - go to next player
       else if(!aceOrFace && !currentAOF){
-        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
-
+        turn = currentPlayer+1 == order.length ? 0 : currentPlayer + 1
       }
       // if the previous card was AOF and the card just played is not AOF - the person that went before the current player is set to be the winner and then the winner is set to play again. They could also play a card again and risk losing the pile. If the pile is slappable, they could also lose said pile to the slapper
       else if(aceOrFace && !currentAOF){
-        let winner = currentPlayer - 1 < 0 ? order.length - 1 : currentPlayer - 1
-        setWinner(order[winner])
-        setCurrentPlayer(winner)
+        turn = currentPlayer - 1 < 0 ? order.length - 1 : currentPlayer - 1
+        // setWinner(order[winner])
+        return dispatch(setGameState({discardPile: [...discardPile, card], players: temp, currentPlayer: turn, roundWinner: order[winner] }))
       }
-
-      if(currentAOF){
-        setAceOrFace(true)
-        setCurrentPlayer(currentPlayer+1 == order.length ? 0 : currentPlayer + 1)
-      }
+      return dispatch(setGameState({discardPile: [...discardPile, card], players: temp, currentPlayer: turn, roundWinner: "" }))
     }
   }
 

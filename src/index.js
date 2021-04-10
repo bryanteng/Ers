@@ -5,6 +5,7 @@ import App from './App';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux'
 import rootReducer from './reducers'
+import { ActionCableProvider } from 'react-actioncable-provider'
 
 const store = createStore(
     rootReducer,
@@ -12,10 +13,13 @@ const store = createStore(
 )
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <ActionCableProvider url={"ws:://localhost:3001/cable"}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </ActionCableProvider>,
   document.getElementById('root')
+
 )
 
 // If you want to start measuring performance in your app, pass a function

@@ -10,7 +10,7 @@ function Game(){
   const currentUser = useSelector(state => state.currentUser)
   const currentGame = useSelector(state => state.currentGame)
   const { username } = currentUser
-  const { deckID, order, players, discardPile } = currentGame
+  const { deckID, players, discardPile, isGameStarted } = currentGame
 
   const claimPile = () => {
     let temp = players
@@ -20,13 +20,11 @@ function Game(){
     console.log(players,username)
   }
 
+  console.log(currentGame, "in game")
   return(
     <div className="game">
-      <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
-      {order.length > 0 ? <Deck />
-    : null }
-
-    <button onClick={()=>claimPile()}>claim pile </button>
+      {isGameStarted ? <Deck /> : null }
+      <button onClick={()=>claimPile()}>claim pile </button>
     </div>
   )
 }

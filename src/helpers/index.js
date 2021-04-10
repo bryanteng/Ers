@@ -1,3 +1,5 @@
+export const API_ROOT = 'http://localhost:3000'
+
 export const pileCheck = (deckID, order, cards) =>{
   let pilesMade
   if(order.length != 0){

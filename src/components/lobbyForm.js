@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from '../actions'
+import { ActionCableConsumer } from 'react-actioncable-provider'
+import { setGameState, setDeckID } from '../actions/gameActions'
 
 function LobbyForm({username}){
 
+  const dispatch = useDispatch()
   const currentGame = useSelector(state => state.currentGame)
   const { deckID, order, isInLobby } = currentGame
-  const dispatch = useDispatch()
+
+  const handleRecievedData = (response) => {
+    console.log(response, "response")
+  }
 
   async function getDeck(event, deck){
     event.preventDefault()
@@ -29,19 +35,12 @@ function LobbyForm({username}){
           return dispatch(allActions.userActions.setLoggedIn(false))
         }
         temp.push(username)
-        fetch(`http://localhost:3000/gameroom/${deck}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({users:temp}),
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-          dispatch(allActions.gameActions.setOrder(data.users))
-          return data;
-        })
+        let player_hash = {}
+        for(let i of temp){
+          player_hash[i] = []
+        }
+        dispatch(setGameState({ users:temp, players: player_hash }))
+        dispatch(allActions.gameActions.setOrder(temp))
       }
     })
   }
@@ -54,18 +53,19 @@ function LobbyForm({username}){
     .then(data =>{
       if( data === null || data.status === 404 ) return alert("Lobby doesn't exist")
       let temp_deck_id = data.deck_id
-      dispatch(allActions.gameActions.setDeckID(temp_deck_id))
+      dispatch(setDeckID(temp_deck_id))
       fetch(`http://localhost:3000/gamerooms`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({users:[username], deck: temp_deck_id}),
+        body: JSON.stringify({users:[username], deckID: temp_deck_id}),
       })
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data);
         dispatch(allActions.gameActions.setOrder(data.users))
+        dispatch(allActions.userActions.setHost(true))
         return data;
       })
     })
@@ -78,9 +78,10 @@ function LobbyForm({username}){
 
     <form onSubmit={(event)=>getDeck(event, deckID)}>
       <label> Enter lobby code </label>
-      <input value={deckID} onChange={(event)=>dispatch(allActions.gameActions.setDeckID(event.target.value))} />
+      <input value={deckID} onChange={(event)=>dispatch(setDeckID(event.target.value))} />
       <button onClick={(event)=>getDeck(event,deckID)}>find lobby </button>
     </form>
+
 
     <label> Create a new lobby </label>
     <button onClick={(event)=>getNewDeck(event)}> lol button </button>

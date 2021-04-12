@@ -4,13 +4,17 @@ import {Switch, BrowserRouter as Router, Route } from 'react-router-dom'
 
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from './actions'
+import { setGameState } from './actions/gameActions'
 
+import Table from './components/table'
 import Homepage from './containers/homepage'
 import Navbar from './components/navbar'
 import Rules from './containers/rules'
 
 import Game from './containers/game'
 import LobbyForm from './components/lobbyForm'
+
+import { ActionCableConsumer } from 'react-actioncable-provider';
 
 // import NewPlayerInput from './components/newPlayerInput'
 
@@ -46,41 +50,46 @@ function App() {
 
   return (
     <div className="App">
-
-    {loggedIn ?
-    <Fragment>
-      <Navbar username={username} />
-      <Rules />
-
-      {!isInLobby ?
-        <LobbyForm username={username} /> :
-
-        isGameStarted ?
-        <Game />
-        :
-        <div>
-          <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
-          <div>Players in the lobby:</div>
-          <ul>
-            {order.map(player=> <li>{player}</li>)}
-          </ul>
-          {order.length > 1 ? <button onClick={()=>startGame()}> start game </button> :
-          <div>
-            <div>invite friends to join to begin playing</div>
-          </div>
-          }
-        </div>
-     }
-
-    </Fragment>
-    :
-    <Homepage />
-  }
-
-
+      <Table />
 
     </div>
+
   );
 }
 
 export default App;
+
+//   {loggedIn ?
+//   <Fragment>
+//     <Navbar username={username} />
+//     <Rules />
+//     <ActionCableConsumer
+//       channel="GameroomsChannel"
+//       onReceived={(data)=>{
+//         console.log(data, "ActionCable data")
+//         setGameState(data)}
+//       }>
+//       {!isInLobby ?
+//         <LobbyForm username={username} /> :
+//         isGameStarted ?
+//         <Game />
+//         :
+//         <div>
+//           <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
+//           <div>Players in the lobby:</div>
+//           <ul>
+//             {order.map(player=> <li>{player}</li>)}
+//           </ul>
+//           {order.length > 1 ? <button onClick={()=>startGame()}> start game </button> :
+//           <div>
+//             <div>invite friends to join to begin playing</div>
+//           </div>
+//           }
+//         </div>
+//       }
+//     </ActionCableConsumer>
+//
+//   </Fragment>
+//   :
+//   <Homepage />
+// }

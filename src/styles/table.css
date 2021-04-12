@@ -1,0 +1,48 @@
+.Game{
+  width:1000px;
+}
+
+.Table{
+  height:500px;
+  width: 80%;
+  background-color: #009e00;
+  border-radius: 50%;
+  float: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0 auto;
+  transform: translate(-50%, -50%);
+  border: 1em solid #8b4513;
+}
+
+.Board {
+  position: relative;
+  top: 40%;
+  left: 30%;
+}
+
+.card-small {
+  border-radius: 10%;
+  height: 80px;
+  width: 56px; /*70% of height*/
+  margin-right: 5px;
+  float: left;
+  border: .3em solid #009e00;
+ }
+
+ .card-last {
+   border-radius: 10%;
+   height: 80px;
+   width: 56px; /*70% of height*/
+   margin-right: 5px;
+   float: left;
+   border: .3em solid black;
+  }
+
+.card-img {
+  text-align: center;
+  margin: 0;
+  height: 80px;
+  width: 56px; /*70% of height*/
+}

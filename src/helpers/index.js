@@ -1,4 +1,5 @@
 export const API_ROOT = 'http://localhost:3000'
+export const WEB_SOCKET = 'ws://localhost:3000/cable'
 
 export const pileCheck = (deckID, order, cards) =>{
   let pilesMade

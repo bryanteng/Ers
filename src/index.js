@@ -5,15 +5,18 @@ import App from './App';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux'
 import rootReducer from './reducers'
+import { WEB_SOCKET } from './helpers'
 import { ActionCableProvider } from 'react-actioncable-provider'
+import ActionCable from 'actioncable';
 
+const cable = ActionCable.createConsumer(WEB_SOCKET);
 const store = createStore(
     rootReducer,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 
 ReactDOM.render(
-  <ActionCableProvider url={"ws:://localhost:3001/cable"}>
+  <ActionCableProvider url={WEB_SOCKET}>
     <Provider store={store}>
       <App />
     </Provider>

@@ -8,10 +8,6 @@ function Table(){
 
   const [url, setUrl] = useState("")
 
-  useEffect(()=>{
-    console.log(cards)
-  },[cards])
-
   const updateCards = (e) =>{
     e.preventDefault()
     setCards([...cards, url])

@@ -7,6 +7,8 @@ import allActions from './actions'
 import { setGameState } from './actions/gameActions'
 
 import Table from './components/table'
+import NewTable from './components/newTable'
+
 import Homepage from './containers/homepage'
 import Navbar from './components/navbar'
 import Rules from './containers/rules'
@@ -50,7 +52,7 @@ function App() {
 
   return (
     <div className="App">
-      <Table />
+      <NewTable />
 
     </div>
 

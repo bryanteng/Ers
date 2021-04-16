@@ -37,7 +37,8 @@ const currentGame = (state = {id: 0, order:[], deckID:"", players:{}, currentPla
           postUpdate(state, action.payload)
 
         case "SET_CURRENT_STATE":
-          return Object.assign(state, action.payload)
+          console.log(action.payload, " IN SET CURRENT STATE")
+          return {...state, ...action.payload, order: action.payload.users}
 
         case "GAME_OVER":
             return {

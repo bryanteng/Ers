@@ -4,7 +4,7 @@ import {Switch, BrowserRouter as Router, Route } from 'react-router-dom'
 
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from './actions'
-import { setGameState } from './actions/gameActions'
+import { setGameState, setCurrentState } from './actions/gameActions'
 
 import Table from './components/table'
 import NewTable from './components/newTable'
@@ -48,6 +48,7 @@ function App({cableApp}) {
       {
         received: (data) =>{
           console.log(data,"received data")
+          dispatch(setCurrentState(data))
         }
       })
       setChannel(cableApp.room)
@@ -55,7 +56,8 @@ function App({cableApp}) {
   },[loggedIn, isInLobby, deckID])
 
   const sendMessage = () =>{
-    channel.send("content")
+    console.log(channel,"channel")
+    channel.received("content")
   }
 
   const startGame = () =>{

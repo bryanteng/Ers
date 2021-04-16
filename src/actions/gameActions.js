@@ -26,6 +26,13 @@ export const setGameState = (state) => {
   }
 }
 
+export const setCurrentState = (state) =>{
+  return {
+    type: "SET_CURRENT_STATE",
+    payload: state
+  }
+}
+
 export const startGame = () => {
   return {
     type: "START_GAME"
@@ -57,6 +64,7 @@ export default {
     setDeckID,
     setCurrentPlayer,
     setGameState,
+    setCurrentState,
     startGame,
     gameOver,
     setPlayers,

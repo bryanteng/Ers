@@ -1,6 +1,6 @@
 import { API_ROOT } from '../helpers'
 
-const currentGame = (state = {order:[], deckID:"", players:{}, currentPlayer: 0, isInLobby:false, isGameStarted: false, roundWinner:"", gameWinner:"", deck:[], discardPile: []}, action) => {
+const currentGame = (state = {id: 0, order:[], deckID:"", players:{}, currentPlayer: 0, isInLobby:false, isGameStarted: false, roundWinner:"", gameWinner:"", deck:[], discardPile: []}, action) => {
     switch(action.type){
         case "SET_ORDER":
             return {
@@ -36,6 +36,9 @@ const currentGame = (state = {order:[], deckID:"", players:{}, currentPlayer: 0,
         case "SET_GAME_STATE":
           postUpdate(state, action.payload)
 
+        case "SET_CURRENT_STATE":
+          return Object.assign(state, action.payload)
+
         case "GAME_OVER":
             return {
               ...state,
@@ -52,7 +55,7 @@ const currentGame = (state = {order:[], deckID:"", players:{}, currentPlayer: 0,
 export default currentGame;
 
 function postUpdate(state, payload){
-  fetch(`http://localhost:3000/gameroom/${state.deckID}`, {
+  fetch(`${API_ROOT}/gameroom/${state.deckID}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -61,7 +64,7 @@ function postUpdate(state, payload){
   })
   .then(response => response.json())
   .then(data => {
-    console.log('Game state:', data);
+    console.log('Game state update:', data);
     return Object.assign(state, data)
   })
 }

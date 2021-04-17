@@ -9,7 +9,7 @@ function LobbyForm({username}){
 
   const dispatch = useDispatch()
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, order, isInLobby } = currentGame
+  const { deckID, users, isInLobby } = currentGame
 
   const handleRecievedData = (response) => {
     console.log(response, "response")
@@ -41,7 +41,7 @@ function LobbyForm({username}){
           player_hash[i] = []
         }
         dispatch(setGameState({ users:temp, players: player_hash }))
-        dispatch(allActions.gameActions.setOrder(temp))
+        dispatch(allActions.gameActions.setUsers(temp))
       }
     })
   }
@@ -65,7 +65,7 @@ function LobbyForm({username}){
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data);
-        dispatch(allActions.gameActions.setOrder(data.users))
+        dispatch(allActions.gameActions.setUsers(data.users))
         dispatch(allActions.userActions.setHost(true))
         return data;
       })

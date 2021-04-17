@@ -1,11 +1,11 @@
 import { API_ROOT } from '../helpers'
 
-const currentGame = (state = {id: 0, order:[], deckID:"", players:{}, currentPlayer: 0, isInLobby:false, isGameStarted: false, roundWinner:"", gameWinner:"", deck:[], discardPile: []}, action) => {
+const currentGame = (state = {id: 0, users:[], deckID:"", players:{}, currentPlayer: 0, isInLobby:false, isGameStarted: false, roundWinner:"", gameWinner:"", deck:[], discardPile: []}, action) => {
     switch(action.type){
-        case "SET_ORDER":
+        case "SET_USERS":
             return {
                 ...state,
-                order: action.payload,
+                users: action.payload,
                 isInLobby: true
             }
 
@@ -38,7 +38,7 @@ const currentGame = (state = {id: 0, order:[], deckID:"", players:{}, currentPla
 
         case "SET_CURRENT_STATE":
           console.log(action.payload, " IN SET CURRENT STATE")
-          return {...state, ...action.payload, order: action.payload.users}
+          return {...state, ...action.payload}
 
         case "GAME_OVER":
             return {

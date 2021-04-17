@@ -28,7 +28,7 @@ function App({cableApp}) {
   const currentUser = useSelector(state => state.currentUser)
   const currentGame = useSelector(state => state.currentGame)
   const { username, loggedIn } = currentUser
-  const { id, deckID, order, isInLobby, players, isGameStarted } = currentGame
+  const { id, deckID, users, isInLobby, players, isGameStarted } = currentGame
   const [channel, setChannel] = useState(null)
 
   // const [user, setUser] = useState("btt")
@@ -47,18 +47,13 @@ function App({cableApp}) {
       },
       {
         received: (data) =>{
-          console.log(data,"received data")
+          console.log("received data: ", data)
           dispatch(setCurrentState(data))
         }
       })
       setChannel(cableApp.room)
     }
   },[loggedIn, isInLobby, deckID])
-
-  const sendMessage = () =>{
-    console.log(channel,"channel")
-    channel.received("content")
-  }
 
   const startGame = () =>{
     dispatch(allActions.gameActions.startGame())
@@ -71,7 +66,6 @@ function App({cableApp}) {
   }
   return (
     <div className="App">
-      <button onClick={()=>sendMessage()}>sendmessage</button>
         {loggedIn ?
         <Fragment>
           <Navbar username={username} />
@@ -87,9 +81,9 @@ function App({cableApp}) {
                 <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
                 <div>Players in the lobby:</div>
                 <ul>
-                  {order.map(player=> <li>{player}</li>)}
+                  {users.map(player=> <li>{player}</li>)}
                 </ul>
-                {order.length > 1 ? <button onClick={()=>startGame()}> start game </button> :
+                {users.length > 1 ? <button onClick={()=>startGame()}> start game </button> :
                 <div>
                   <div>invite friends to join to begin playing</div>
                 </div>

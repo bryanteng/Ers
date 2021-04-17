@@ -199,6 +199,11 @@
 .figures.H {
   background-position: 0 20px;
 }
+.gamebuttons{
+  position: relative;
+  float:left;
+  top:0;
+}
 .table {
   width: 1000px;
   height: 400px;

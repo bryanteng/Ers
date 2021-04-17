@@ -23,7 +23,8 @@ function Game(){
   console.log(currentGame, "in game")
   return(
     <div className="game">
-      {isGameStarted ? <Deck /> : null }
+      <div className="table">table</div>
+        <Deck />
       <button onClick={()=>claimPile()}>claim pile </button>
     </div>
   )

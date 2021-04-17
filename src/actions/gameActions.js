@@ -1,7 +1,7 @@
-export const setOrder = (order) => {
+export const setUsers = (users) => {
     return {
-        type: "SET_ORDER",
-        payload: order
+        type: "SET_USERS",
+        payload: users
     }
 }
 
@@ -60,7 +60,7 @@ export const setDiscardPile = (discardPile) => {
 }
 
 export default {
-    setOrder,
+    setUsers,
     setDeckID,
     setCurrentPlayer,
     setGameState,

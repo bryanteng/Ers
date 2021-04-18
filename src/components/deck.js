@@ -129,9 +129,7 @@ function Deck(){
 }
 
 export default Deck
-Deck.defaultProps = {
-  users: []
-}
+
 // <button onClick={()=>{getCards()}}> getCards button </button>
 // <button onClick={()=>{pileCheck()}}> pileCheck button </button>
 // <button onClick={()=>{drawCards()}}> draw button </button>

@@ -151,6 +151,11 @@
   position: relative;
   background-color: white;
   font-family: "Houschka Rounded";
+  border: .3em solid #4aad4a;
+}
+
+.card-last{
+  border: .3em solid red;
 }
 .card.figures-P,
 .card.figures-C {

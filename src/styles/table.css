@@ -151,6 +151,11 @@
   position: relative;
   background-color: white;
   font-family: "Houschka Rounded";
+  border: .3em solid #4aad4a;
+}
+
+.card-last{
+  border: .3em solid red;
 }
 .card.figures-P,
 .card.figures-C {
@@ -198,6 +203,11 @@
 }
 .figures.H {
   background-position: 0 20px;
+}
+.gamebuttons{
+  position: relative;
+  float:left;
+  top:0;
 }
 .table {
   width: 1000px;

@@ -1,14 +1,14 @@
 export const API_ROOT = 'http://localhost:3000'
 export const WEB_SOCKET = 'ws://localhost:3000/cable'
 
-export const pileCheck = (deckID, order, cards) =>{
+export const pileCheck = (deckID, users, cards) =>{
   let pilesMade
-  if(order.length != 0){
-    return fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/${order[0]}/list/`)
+  if(users.length != 0){
+    return fetch(`https://deckofcardsapi.com/api/deck/${deckID}/pile/${users[0]}/list/`)
     .then(data => data.json())
     .then(data => {
       pilesMade = data.piles
-      for(let player of order){
+      for(let player of users){
         if(!pilesMade[player] || !pilesMade[player]["remaining"]){
           getCards(getCardsUrlMaker(player, deckID, cards))
           pileCheck()
@@ -73,8 +73,8 @@ export function isSlappable(array){
       let consecutive = "1234567891011121312345678910111213"
       let revConsecutive = "1312111098765432113121110987654321"
       let fourth = cardValue(array[len - 4].value)
-      let order = [first, second, third, fourth].join("")
-      if(consecutive.includes(order) || revConsecutive.includes(order)) return "FOUR IN A ROW"
+      let fourInOrder = [first, second, third, fourth].join("")
+      if(consecutive.includes(fourInOrder) || revConsecutive.includes(fourInOrder)) return "FOUR IN A ROW"
     }
   }
 

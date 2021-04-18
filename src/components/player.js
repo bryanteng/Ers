@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
+import {useSelector, useDispatch} from 'react-redux'
+
 // import { pileCheck, getCards, getCardsUrlMaker } from '../helpers'
 
-function Player({player, deckID, playersCards, playCard}){
+function Player({index, player, deckID, playersCards, playCard}){
 
   const [ hand, setHand ] = useState([])
+  const currentGame = useSelector(state => state.currentGame)
+  const { currentPlayer } = currentGame
 
   useEffect(()=>{
     setHand(playersCards)
@@ -34,14 +38,17 @@ function Player({player, deckID, playersCards, playCard}){
   }
 
   return(
-    <div className="player">
-      {hand.length == 0 ? <div>{player}, no cards left</div> :
-        <div>
-        {player}, hand:{hand[0].code}
-        <img src={hand[0].image} id={player} onClick={(event)=>playCard(event)}alt="new" />
-        </div>
+    <Fragment>
+      <div className={`player player-${index+1}${index==currentPlayer? ' playing' : ''}`}>
+      <div className="avatar" id={player} onClick={(event)=>playCard(event)} style={{backgroundColor:`#${Math.floor(Math.random()*16777215).toString(16)}`}}> </div>
+      <div className="name">{player} </div>
+      {hand.length == 0 ?
+        <div>no cards left</div>
+          :
+        <div className="bank-value">{hand.length} </div>
       }
     </div>
+    </Fragment>
   )
 }
 
@@ -49,6 +56,11 @@ export default Player
 Player.defaultProps = {
   playersCards: []
 }
+
+// <div>
+//   {player}, hand:{hand[0].code}
+//   <img src={hand[0].image} id={player} onClick={(event)=>playCard(event)}alt="new" />
+// </div>
 
 // const pileCheck = (deckID, order, player, cards) =>{
 // const getCards = async ( url ) =>{

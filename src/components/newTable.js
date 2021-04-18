@@ -8,14 +8,11 @@ function NewTable(){
       <div className="table">
         <div className="players">
           {players.map((player,index) => (
-
             <div className={`player player-${index+1}${index==0? ' playing' : ''}`}>
               <div className="avatar" style={{backgroundColor:`#${Math.floor(Math.random()*16777215).toString(16)}`}}> </div>
               <div className="name">{player} </div>
               <div className="bank-value">{cards.length} </div>
-
             </div>
-
           ))}
         </div>
 

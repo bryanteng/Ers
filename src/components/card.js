@@ -5,14 +5,9 @@ function Card({src, index}){
   return(
     <Fragment>
     {index == 3 ?
-      <div className="card-last" index={index}>
-        <img className="card-img" src={src} />
-      </div>
+      <img className="card card-last" index={index} src={src}/>
       :
-      <div className="card-small">
-        <img className="card-img" src={src}/>
-      </div>
-
+      <img className="card" src={src} />
     }
     </Fragment>
   )

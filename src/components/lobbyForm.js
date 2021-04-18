@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from '../actions'
 // import { ActionCableConsumer } from 'react-actioncable-provider'
+import { API_ROOT } from '../helpers'
 import { setGameState, setDeckID } from '../actions/gameActions'
 
 function LobbyForm({username}){
 
   const dispatch = useDispatch()
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, order, isInLobby } = currentGame
+  const { deckID, users, isInLobby } = currentGame
 
   const handleRecievedData = (response) => {
     console.log(response, "response")
@@ -17,7 +18,7 @@ function LobbyForm({username}){
   async function getDeck(event, deck){
     event.preventDefault()
     return await fetch(`http://localhost:3000/gameroom/${deck}`, {
-      method: 'GET', // or 'PUT'
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -40,7 +41,7 @@ function LobbyForm({username}){
           player_hash[i] = []
         }
         dispatch(setGameState({ users:temp, players: player_hash }))
-        dispatch(allActions.gameActions.setOrder(temp))
+        dispatch(allActions.gameActions.setUsers(temp))
       }
     })
   }
@@ -54,7 +55,7 @@ function LobbyForm({username}){
       if( data === null || data.status === 404 ) return alert("Lobby doesn't exist")
       let temp_deck_id = data.deck_id
       dispatch(setDeckID(temp_deck_id))
-      fetch(`http://localhost:3000/gamerooms`, {
+      fetch(`${API_ROOT}/gamerooms`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +65,7 @@ function LobbyForm({username}){
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data);
-        dispatch(allActions.gameActions.setOrder(data.users))
+        dispatch(allActions.gameActions.setUsers(data.users))
         dispatch(allActions.userActions.setHost(true))
         return data;
       })

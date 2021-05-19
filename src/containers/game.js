@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import Deck from '../components/deck'
 import Player from '../components/player'
+import Card from '../components/card'
 
 import { isSlappable } from '../helpers'
 import allActions from '../actions'
 import { setGameState, setCurrentPlayer } from '../actions/gameActions'
 
+import cardback from '../cardback.png'
+
 function Game(){
   const dispatch = useDispatch()
   const currentUser = useSelector(state => state.currentUser)
-  const { username } = currentUser
+  const { username, isHost } = currentUser
   const currentGame = useSelector(state => state.currentGame)
   const { deckID, users, players, discardPile, currentPlayer, isGameStarted } = currentGame
 
@@ -126,15 +129,30 @@ function Game(){
   console.log(currentGame, "in game")
   return(
     <div className="GameDiv">
+      <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
+
       <button className="gamebuttons" onClick={()=>claimPile()}>claim pile </button>
-      <button className="gamebuttons" onClick={()=>{distributeCards()}}> distributeCards button </button>
-      <button className="gamebuttons" onClick={()=>{shuffleDeck()}}> new deck/shuffle button </button>
-      <button className="gamebuttons" onClick={()=>{resetHands()}}> reset button </button>
-      <button className="gamebuttons" onClick={()=>{checkState()}}> check state button </button>
+      {isHost ?
+      <Fragment>
+        <button className="gamebuttons" onClick={()=>{distributeCards()}}> distributeCards button </button>
+        <button className="gamebuttons" onClick={()=>{shuffleDeck()}}> new deck/shuffle button </button>
+        <button className="gamebuttons" onClick={()=>{resetHands()}}> reset button </button>
+        <button className="gamebuttons" onClick={()=>{checkState()}}> check state button </button>
+      </Fragment>
+      :
+      null}
       <div className="game">
         <div className="table">
           <div className="players">
             {users.map((player,index) => <Player index={index} player={player} deckID={deckID} playersCards={players[player]} playCard={playCard}/>)}
+          </div>
+          <div className="card-place">
+            {discardPile.length > 3 ?
+              discardPile.slice(discardPile.length-4,discardPile.length).map((card,index)=> <Card className="card" index={index} src={card ? card.image: cardback}/> )
+            :
+              [...new Array(4 - discardPile.length), ...discardPile].map((card,index)=> <Card className="card" index={index} src={card ? card.image: cardback}/>)
+            }
+            <div className="card-count">{discardPile.length}</div>
           </div>
         </div>
       </div>

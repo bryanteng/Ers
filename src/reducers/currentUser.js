@@ -1,10 +1,15 @@
 const currentUser = (state = {username:"", loggedIn:false, isHost: false}, action) => {
     switch(action.type){
         case "SET_USER":
+        if(action.payload.length < 17){
             return {
                 ...state,
                 username: action.payload,
             }
+          }else{
+            alert("name too long")
+            return state
+          }
 
         case "SET_LOGGED_IN":
             return {

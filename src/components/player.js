@@ -40,12 +40,18 @@ function Player({index, player, deckID, playersCards, playCard}){
   return(
     <Fragment>
       <div className={`player player-${index+1}${index==currentPlayer? ' playing' : ''}`}>
-      <div className="avatar" id={player} onClick={(event)=>playCard(event)} style={{backgroundColor:`#${Math.floor(Math.random()*16777215).toString(16)}`}}> </div>
-      <div className="name">{player} </div>
       {hand.length == 0 ?
-        <div>no cards left</div>
+        <Fragment>
+          <div className="avatar" id={player} style={{backgroundColor:`#${Math.floor(Math.random()*16777215).toString(16)}`}}> </div>
+          <div className="name">{player} </div>
+          <div className="bank-value">no cards left</div>
+        </Fragment>
           :
-        <div className="bank-value">{hand.length} </div>
+        <Fragment>
+          <div className="avatar" id={player} onClick={(event)=>playCard(event)} style={{backgroundColor:`#${Math.floor(Math.random()*16777215).toString(16)}`}}> </div>
+          <div className="name">{player} </div>
+          <div className="bank-value">{hand.length} </div>
+        </Fragment>
       }
     </div>
     </Fragment>

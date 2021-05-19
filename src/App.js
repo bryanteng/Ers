@@ -1,33 +1,25 @@
 import './App.css';
 import React, { useState, useEffect, Fragment } from 'react'
 import {Switch, BrowserRouter as Router, Route } from 'react-router-dom'
-
 import {useSelector, useDispatch} from 'react-redux'
+
 import allActions from './actions'
 import { setGameState, setCurrentState } from './actions/gameActions'
 
-import Table from './components/table'
-import NewTable from './components/newTable'
-
 import Homepage from './containers/homepage'
 import Navbar from './components/navbar'
-import Rules from './containers/rules'
 
 import Game from './containers/game'
 import LobbyForm from './components/lobbyForm'
 
 import { ActionCableConsumer } from 'react-actioncable-provider';
-import GameroomSocket from './components/GameroomSocket'
-
-
-// import NewPlayerInput from './components/newPlayerInput'
 
 function App({cableApp}) {
 
   const dispatch = useDispatch()
   const currentUser = useSelector(state => state.currentUser)
   const currentGame = useSelector(state => state.currentGame)
-  const { username, loggedIn } = currentUser
+  const { username, loggedIn, isHost } = currentUser
   const { id, deckID, users, isInLobby, players, isGameStarted } = currentGame
   const [channel, setChannel] = useState(null)
 
@@ -69,9 +61,6 @@ function App({cableApp}) {
         {loggedIn ?
         <Fragment>
           <Navbar username={username} />
-          <Rules />
-          <GameroomSocket />
-
             {!isInLobby ?
               <LobbyForm username={username} /> :
               isGameStarted ?
@@ -80,14 +69,20 @@ function App({cableApp}) {
               <div>
                 <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
                 <div>Players in the lobby:</div>
-                <ul>
-                  {users.map(player=> <li>{player}</li>)}
-                </ul>
-                {users.length > 1 ? <button onClick={()=>startGame()}> start game </button> :
+                <ol className="playersList">
+                  {users.map(player=> <li style={{ listStylePosition: "inside", justify:"center" }} className="playerLi" >{player}</li>)}
+                </ol>
+
+                {users.length > 1 && isHost ? <button onClick={()=>startGame()}> start game </button> :
                 <div>
+                  {users.length == 1 && isHost ?
                   <div>invite friends to join to begin playing</div>
+                    :
+                    <div>wait for host to start game</div>
+                  }
                 </div>
                 }
+
               </div>
             }
 

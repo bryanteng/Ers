@@ -30,6 +30,8 @@ function LobbyForm({username}){
       if( data === null || data.status === 404 ) return alert("Lobby doesn't exist")
       else{
         if( data.users.length > 8 ) return alert("Lobby full!")
+        if( data.isGameStarted ) return alert("Game already started!")
+
         let temp = data.users
         if(temp.includes(username)){
           alert("Lobby already contains a user with that name! Change your username to play in this lobby.")

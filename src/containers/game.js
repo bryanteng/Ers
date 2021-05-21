@@ -15,7 +15,7 @@ function Game(){
   const currentUser = useSelector(state => state.currentUser)
   const { username, isHost } = currentUser
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, users, players, discardPile, currentPlayer, isGameStarted } = currentGame
+  const { deckID, users, players, discardPile, currentPlayer, isGameStarted, roundWinner } = currentGame
 
   const [deck, setDeck] = useState([])
   const [winner, setWinner] = useState("")
@@ -24,14 +24,17 @@ function Game(){
 
   useEffect(()=>{
     setSlappable(isSlappable(discardPile))
-    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer)
+    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
   },[currentPlayer])
 
   const claimPile = () => {
+    // if()
     let temp = players
     temp[username] = temp[username].concat(discardPile)
-    dispatch(allActions.gameActions.setPlayers(temp))
-    dispatch(allActions.gameActions.setDiscardPile([]))
+    dispatch(setGameState({players: temp, discardPile: [],roundWinner:""}))
+
+    // dispatch(allActions.gameActions.setPlayers(temp))
+    // dispatch(allActions.gameActions.setDiscardPile([]))
     console.log(players,username)
   }
 
@@ -123,10 +126,9 @@ function Game(){
   }
 
   const checkState = () =>{
-    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer)
+    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
   }
 
-  console.log(currentGame, "in game")
   return(
     <div className="GameDiv">
       <div className="lobbyCodeDiv">Lobby code: {deckID}</div>

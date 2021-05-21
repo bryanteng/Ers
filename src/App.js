@@ -10,6 +10,7 @@ import Homepage from './containers/homepage'
 import Navbar from './components/navbar'
 
 import Game from './containers/game'
+import Lobby from './containers/lobby'
 import LobbyForm from './components/lobbyForm'
 
 import { ActionCableConsumer } from 'react-actioncable-provider';
@@ -47,15 +48,6 @@ function App({cableApp}) {
     }
   },[loggedIn, isInLobby, deckID])
 
-  const startGame = () =>{
-    dispatch(allActions.gameActions.startGame())
-    // let player_hash = {}
-    // for(let i of order){
-    //   player_hash[i] = []
-    // }
-    // setPlayers(player_hash)
-    // setIsGameStarted(true)
-  }
   return (
     <div className="App">
         {loggedIn ?
@@ -66,24 +58,7 @@ function App({cableApp}) {
               isGameStarted ?
               <Game />
               :
-              <div>
-                <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
-                <div>Players in the lobby:</div>
-                <ol className="playersList">
-                  {users.map(player=> <li style={{ listStylePosition: "inside", justify:"center" }} className="playerLi" >{player}</li>)}
-                </ol>
-
-                {users.length > 1 && isHost ? <button onClick={()=>startGame()}> start game </button> :
-                <div>
-                  {users.length == 1 && isHost ?
-                  <div>invite friends to join to begin playing</div>
-                    :
-                    <div>wait for host to start game</div>
-                  }
-                </div>
-                }
-
-              </div>
+              <Lobby/>
             }
 
         </Fragment>

@@ -9,7 +9,8 @@ function Homepage(){
   const dispatch = useDispatch()
 
   useEffect(function updateTitle() {
-    document.title = "Welcome " + currentUser.username + ", ERS";
+    if(currentUser.username == "") document.title = "Welcome to ERS";
+    else document.title = "Welcome " + currentUser.username + ", ERS";
   },[currentUser.username]);
 
   return(

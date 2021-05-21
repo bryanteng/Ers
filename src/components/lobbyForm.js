@@ -87,7 +87,7 @@ function LobbyForm({username}){
 
 
     <label> Create a new lobby </label>
-    <button onClick={(event)=>getNewDeck(event)}> lol button </button>
+    <button onClick={(event)=>getNewDeck(event)}> create </button>
 
     </div>
   )

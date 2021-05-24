@@ -1,19 +1,17 @@
 import './App.css';
 import React, { useState, useEffect, Fragment } from 'react'
 import {Switch, BrowserRouter as Router, Route } from 'react-router-dom'
-import {useSelector, useDispatch} from 'react-redux'
+import { ActionCableConsumer } from 'react-actioncable-provider';
 
+import {useSelector, useDispatch} from 'react-redux'
 import allActions from './actions'
 import { setGameState, setCurrentState } from './actions/gameActions'
 
-import Homepage from './containers/homepage'
 import Navbar from './components/navbar'
-
+import Homepage from './containers/homepage'
 import Game from './containers/game'
 import Lobby from './containers/lobby'
 import LobbyForm from './components/lobbyForm'
-
-import { ActionCableConsumer } from 'react-actioncable-provider';
 
 function App({cableApp}) {
 
@@ -22,7 +20,6 @@ function App({cableApp}) {
   const currentGame = useSelector(state => state.currentGame)
   const { username, loggedIn, isHost } = currentUser
   const { id, deckID, users, isInLobby, players, isGameStarted } = currentGame
-  const [channel, setChannel] = useState(null)
 
   // const [user, setUser] = useState("btt")
   // const [loggedIn, setLoggedIn] = useState(false)
@@ -44,7 +41,6 @@ function App({cableApp}) {
           dispatch(setCurrentState(data))
         }
       })
-      setChannel(cableApp.room)
     }
   },[loggedIn, isInLobby, deckID])
 
@@ -58,9 +54,8 @@ function App({cableApp}) {
               isGameStarted ?
               <Game />
               :
-              <Lobby/>
+              <Lobby isHost={isHost}/>
             }
-
         </Fragment>
         :
         <Homepage />

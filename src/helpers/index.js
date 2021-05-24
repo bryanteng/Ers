@@ -27,7 +27,7 @@ export const getCardsUrlMaker = ( player, deckID, cards ) => {
 }
 
 export function isSlappable(array){
-  if(array.length == 0) return false
+  if(array.length == 0) return ""
   let len = array.length
 
   //check top if JOKER
@@ -36,7 +36,7 @@ export function isSlappable(array){
   //if only one card in pile, only a JOKER can be slapped
   if(len == 1){
     if(array[0].value == "JOKER") return "JOKER"
-    else return false
+    else return ""
   }
 
   // begin two card slappable, deck must also have at least 2 cards
@@ -79,7 +79,7 @@ export function isSlappable(array){
   }
 
   }
-  return false
+  return ""
 }
 
 export function cardValue(card){

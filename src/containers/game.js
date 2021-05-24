@@ -15,16 +15,15 @@ function Game(){
   const currentUser = useSelector(state => state.currentUser)
   const { username, isHost } = currentUser
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, users, players, discardPile, currentPlayer, isGameStarted, roundWinner } = currentGame
+  const { deckID, users, players, discardPile, currentPlayer, aceOrFace, slappable, isGameStarted, roundWinner } = currentGame
 
-  const [deck, setDeck] = useState([])
   const [winner, setWinner] = useState("")
-  const [aceOrFace, setAceOrFace] = useState(false)
-  const [slappable, setSlappable] = useState(false)
+  // const [aceOrFace, setAceOrFace] = useState(false)
+  // const [slappable, setSlappable] = useState("")
 
   useEffect(()=>{
-    setSlappable(isSlappable(discardPile))
-    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
+    // setSlappable(isSlappable(discardPile))
+    // console.log(isSlappable(discardPile), slappable, aceOrFace, roundWinner, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
   },[currentPlayer])
 
   const claimPile = () => {
@@ -42,11 +41,11 @@ function Game(){
     fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
       .then(data => data.json())
       .then(data => {
-        setDeck(data.cards)
+        distributeCards(data.cards)
       })
     }
 
-  const distributeCards = () => {
+  const distributeCards = (deck) => {
 
     let temp = Object.assign({}, players)
     let index = 0
@@ -83,45 +82,41 @@ function Game(){
       hash[i] = []
     }
     dispatch(setGameState({players: hash}))
-    setDeck([])
   }
 
   const playCard = (event) =>{
-    setSlappable(false)
-    setAceOrFace(false)
 
     let player = event.target.id
-    // if(user == event.target.id && event.target.id == users[currentPlayer]){
-    if(event.target.id == users[currentPlayer]){
+    if(username == event.target.id && event.target.id == users[currentPlayer]){
+    // if(event.target.id == users[currentPlayer]){
       //takes the random card out of the players hand and puts it into the discard pile, then sets the players hands. AOF rules to determine next turn
-      let index = Math.floor(Math.random()*players[player].length)
-      let card = players[player][index]
-      let cardCode = card.code
-      let cardValue =  cardCode[0]
-      let currentAOF = "JQKA".includes(cardValue)
-      let temp = players
-      let turn
-      temp[username].splice(index,1)
-      // dispatch(setGameState({discardPile: [...discardPile, card], players: temp }))
-      // dispatch(allActions.gameActions.setDiscardPile([...discardPile, card]))
-      // dispatch(allActions.gameActions.setPlayers(temp))
+      let index = Math.floor(Math.random()*players[player].length) // random card index in players hand
+      let card = players[player][index] //random card picked
+      let cardCode = card.code // the random card's code
+      let cardValue =  cardCode[0] // the random card's value
+      let currentAOF = "JQKA".includes(cardValue) // checks to see if card is an Ace or Face card
+      let temp = players // copies the players object from state
+      temp[username].splice(index,1) //takes the card out of the players hand
+
+      let pile = [...discardPile, card] // adds the card to the discard pile
+      let slappableState = isSlappable(pile) // sets the slappable state
+      let turn // this is determined by the AOF logic below; normally it just goes to next player
 
       // if the card just played is an AOF - go to next player
       if( currentAOF ){
-        setAceOrFace(true)
         turn = currentPlayer+1 == users.length ? 0 : currentPlayer + 1
       }
       // if the previous card was not AOF and the current is not AOF - go to next player
       else if(!aceOrFace && !currentAOF){
         turn = currentPlayer+1 == users.length ? 0 : currentPlayer + 1
       }
-      // if the previous card was AOF and the card just played is not AOF - the person that went before the current player is set to be the winner and then the winner is set to play again. They could also play a card again and risk losing the pile. If the pile is slappable, they could also lose said pile to the slapper
+      // if the previous card was AOF and the card just played is not AOF - the person that went before the current player is the round winner and then the winner is set to play again (currentPlayer value). They could also play a card again and risk losing the pile. If the pile is slappable, they could also lose said pile to the slapper
       else if(aceOrFace && !currentAOF){
         turn = currentPlayer - 1 < 0 ? users.length - 1 : currentPlayer - 1
-        // setWinner(users[winner])
-        return dispatch(setGameState({discardPile: [...discardPile, card], players: temp, currentPlayer: turn, roundWinner: users[winner] }))
+
+        return dispatch(setGameState({discardPile: pile, players: temp, currentPlayer: turn, roundWinner: users[turn], aceOrFace: currentAOF, slappable: slappableState}))
       }
-      return dispatch(setGameState({discardPile: [...discardPile, card], players: temp, currentPlayer: turn, roundWinner: "" }))
+      return dispatch(setGameState({discardPile: pile, players: temp, currentPlayer: turn, roundWinner: "", aceOrFace: currentAOF, slappable: slappableState }))
     }
   }
 
@@ -136,9 +131,8 @@ function Game(){
       <button className="gamebuttons" onClick={()=>claimPile()}>claim pile </button>
       {isHost ?
       <Fragment>
-        <button className="gamebuttons" onClick={()=>{distributeCards()}}> distributeCards button </button>
-        <button className="gamebuttons" onClick={()=>{shuffleDeck()}}> new deck/shuffle button </button>
-        <button className="gamebuttons" onClick={()=>{resetHands()}}> reset button </button>
+        <button className="gamebuttons" onClick={()=>{shuffleDeck()}}> start new game </button>
+        <button className="gamebuttons" onClick={()=>{resetHands()}}> reset hands </button>
         <button className="gamebuttons" onClick={()=>{checkState()}}> check state button </button>
       </Fragment>
       :
@@ -163,6 +157,7 @@ function Game(){
 }
 
 export default Game
+// <button className="gamebuttons" onClick={()=>{distributeCards()}}> distribute cards </button>
 
 // function shuffle(array) {
 //   var currentIndex = array.length, temporaryValue, randomIndex;

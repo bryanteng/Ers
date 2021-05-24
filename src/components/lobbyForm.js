@@ -1,19 +1,14 @@
 import React, { useState } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import allActions from '../actions'
-// import { ActionCableConsumer } from 'react-actioncable-provider'
 import { API_ROOT } from '../helpers'
-import { setGameState, setDeckID } from '../actions/gameActions'
+import { setGameState, setDeckID, setUsers } from '../actions/gameActions'
 
 function LobbyForm({username}){
 
   const dispatch = useDispatch()
   const currentGame = useSelector(state => state.currentGame)
   const { deckID, users, isInLobby } = currentGame
-
-  const handleRecievedData = (response) => {
-    console.log(response, "response")
-  }
 
   async function getDeck(event, deck){
     event.preventDefault()
@@ -43,7 +38,7 @@ function LobbyForm({username}){
           player_hash[i] = []
         }
         dispatch(setGameState({ users:temp, players: player_hash }))
-        dispatch(allActions.gameActions.setUsers(temp))
+        dispatch(setUsers(temp))
       }
     })
   }
@@ -67,7 +62,7 @@ function LobbyForm({username}){
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data);
-        dispatch(allActions.gameActions.setUsers(data.users))
+        dispatch(setUsers(data.users))
         dispatch(allActions.userActions.setHost(true))
         return data;
       })

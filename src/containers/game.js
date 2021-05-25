@@ -15,26 +15,38 @@ function Game(){
   const currentUser = useSelector(state => state.currentUser)
   const { username, isHost } = currentUser
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, users, players, discardPile, currentPlayer, aceOrFace, slappable, isGameStarted, roundWinner } = currentGame
+  const { deckID, users, players, discardPile, currentPlayer, aceOrFace, slappable, isGameStarted, roundWinner, penaltyPile } = currentGame
 
   const [winner, setWinner] = useState("")
   // const [aceOrFace, setAceOrFace] = useState(false)
   // const [slappable, setSlappable] = useState("")
 
   useEffect(()=>{
+    console.log(penaltyPile)
     // setSlappable(isSlappable(discardPile))
     // console.log(isSlappable(discardPile), slappable, aceOrFace, roundWinner, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
-  },[currentPlayer])
+  },[players])
 
   const claimPile = () => {
-    // if()
-    let temp = players
-    temp[username] = temp[username].concat(discardPile)
-    dispatch(setGameState({players: temp, discardPile: [],roundWinner:""}))
+    if(slappable != "" || roundWinner == username){
+      let temp = players
+      temp[username] = temp[username].concat(discardPile).concat(penaltyPile)
+      dispatch(setGameState({players: temp, discardPile: [], penaltyPile: [], roundWinner:""}))
+    } else{
+      //user slapped the pile when it was not slappable, grab a random card and add it to the penalty cards pile
+      let index = Math.floor(Math.random()*players[username].length) // random card index in players hand
+      let card = players[username][index] //random card picked
+      let temp = players // copies the players object from state
+      temp[username].splice(index,1) //takes the card out of the players hand
+
+      // CHANGE THE USER'S PILE AND ADDS THE CARD TO THE PENALTY PILE
+      let pile = [...penaltyPile, card]
+      dispatch(setGameState({players: temp, penaltyPile: pile}))
+    }
+
 
     // dispatch(allActions.gameActions.setPlayers(temp))
     // dispatch(allActions.gameActions.setDiscardPile([]))
-    console.log(players,username)
   }
 
   const drawCards = () =>{

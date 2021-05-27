@@ -6,6 +6,7 @@ import {useSelector, useDispatch} from 'react-redux'
 function Player({index, player, deckID, playersCards, playCard}){
 
   const [ hand, setHand ] = useState([])
+  const currentUser = useSelector(state => state.currentUser)
   const currentGame = useSelector(state => state.currentGame)
   const { currentPlayer } = currentGame
 
@@ -42,13 +43,13 @@ function Player({index, player, deckID, playersCards, playCard}){
       <div className={`player player-${index+1}${index==currentPlayer? ' playing' : ''}`}>
       {hand.length == 0 ?
         <Fragment>
-          <div className="avatar" id={player} style={{backgroundColor:`#${Math.floor(Math.random()*16777215).toString(16)}`}}> </div>
+          <div className="avatar" id={player} style={{backgroundColor: currentUser.chipColor}}> </div>
           <div className="name">{player} </div>
           <div className="bank-value">no cards left</div>
         </Fragment>
           :
         <Fragment>
-          <div className="avatar" id={player} onClick={(event)=>playCard(event)} style={{backgroundColor:`#${Math.floor(Math.random()*16777215).toString(16)}`}}> </div>
+          <div className="avatar" id={player} onClick={(event)=>playCard(event)} style={{backgroundColor:currentUser.chipColor}}> </div>
           <div className="name">{player} </div>
           <div className="bank-value">{hand.length} </div>
         </Fragment>

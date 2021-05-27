@@ -4,11 +4,10 @@ import Deck from '../components/deck'
 import Player from '../components/player'
 import Card from '../components/card'
 
+import cardback from '../cardback.png'
 import { isSlappable } from '../helpers'
 import allActions from '../actions'
 import { setGameState, setCurrentPlayer } from '../actions/gameActions'
-
-import cardback from '../cardback.png'
 
 function Game(){
   const dispatch = useDispatch()
@@ -17,12 +16,11 @@ function Game(){
   const currentGame = useSelector(state => state.currentGame)
   const { deckID, users, players, discardPile, currentPlayer, aceOrFace, slappable, isGameStarted, roundWinner, penaltyPile } = currentGame
 
-  const [winner, setWinner] = useState("")
+  // const [winner, setWinner] = useState("")
   // const [aceOrFace, setAceOrFace] = useState(false)
   // const [slappable, setSlappable] = useState("")
 
   useEffect(()=>{
-    console.log(penaltyPile)
     // setSlappable(isSlappable(discardPile))
     // console.log(isSlappable(discardPile), slappable, aceOrFace, roundWinner, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
   },[players])
@@ -133,7 +131,7 @@ function Game(){
   }
 
   const checkState = () =>{
-    console.log(isSlappable(discardPile), slappable, aceOrFace, winner, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
+    console.log(isSlappable(discardPile), slappable, aceOrFace, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
   }
 
   return(

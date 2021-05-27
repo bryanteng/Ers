@@ -21,9 +21,18 @@ function Game(){
   // const [slappable, setSlappable] = useState("")
 
   useEffect(()=>{
+    if(isHost && discardPile.length > 0){
+      let player = users[currentPlayer]
+      if(players[player].length == 0 ){
+        // console.log(players[player] + " is out of cards!")
+        let turn // this is determined by the AOF logic below; normally it just goes to next player
+        turn = currentPlayer+1 == users.length ? 0 : currentPlayer + 1
+        return dispatch(setGameState({currentPlayer: turn}))
+      }
+    }
     // setSlappable(isSlappable(discardPile))
     // console.log(isSlappable(discardPile), slappable, aceOrFace, roundWinner, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
-  },[players])
+  },[currentPlayer])
 
   const claimPile = () => {
     if(slappable != "" || roundWinner == username){

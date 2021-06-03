@@ -1,4 +1,4 @@
-const currentUser = (state = {username:"", loggedIn:false, isHost: false}, action) => {
+const currentUser = (state = {username:"", loggedIn:false, isHost: false, chipColor:""}, action) => {
     switch(action.type){
         case "SET_USER":
         if(action.payload.length < 17){
@@ -14,7 +14,8 @@ const currentUser = (state = {username:"", loggedIn:false, isHost: false}, actio
         case "SET_LOGGED_IN":
             return {
               ...state,
-              loggedIn: action.payload
+              loggedIn: action.payload,
+              chipColor: `#${Math.floor(Math.random()*16777215).toString(16)}`
             }
 
         case "SET_HOST":

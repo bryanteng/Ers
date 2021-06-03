@@ -3,22 +3,14 @@ import {useSelector, useDispatch} from 'react-redux'
 import { startGame } from '../actions/gameActions'
 
 
-function Lobby(){
+function Lobby({isHost}){
 
   const dispatch = useDispatch()
-  const currentUser = useSelector(state => state.currentUser)
   const currentGame = useSelector(state => state.currentGame)
-  const { isHost } = currentUser
   const { deckID, users, players } = currentGame
 
   const startGameButton = () =>{
     dispatch(startGame())
-    // let player_hash = {}
-    // for(let i of order){
-    //   player_hash[i] = []
-    // }
-    // setPlayers(player_hash)
-    // setIsGameStarted(true)
   }
 
   return(
@@ -28,7 +20,6 @@ function Lobby(){
       <ol className="playersList">
         {users.map(player=> <li style={{ listStylePosition: "inside", justify:"center" }} className="playerLi" >{player}</li>)}
       </ol>
-
       {users.length > 1 && isHost ? <button onClick={()=>startGameButton()}> start game </button> :
       <div>
         {users.length == 1 && isHost ?
@@ -41,7 +32,6 @@ function Lobby(){
 
     </div>
   )
-
 }
 
 export default Lobby

@@ -48,7 +48,7 @@ function App({cableApp}) {
     <div className="App">
         {loggedIn ?
         <Fragment>
-          <Navbar username={username} />
+          <Navbar username={username} deckID={deckID} />
             {!isInLobby ?
               <LobbyForm username={username} /> :
               isGameStarted ?

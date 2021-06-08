@@ -21,6 +21,7 @@ function Game(){
   // const [slappable, setSlappable] = useState("")
 
   useEffect(()=>{
+    // only the host player is responsible for the continuation of turns, this prevents every player from trying to update gamestate at the same time
     if(isHost && discardPile.length > 0){
       let player = users[currentPlayer]
       if(players[player].length == 0 ){
@@ -30,30 +31,28 @@ function Game(){
         return dispatch(setGameState({currentPlayer: turn}))
       }
     }
-    // setSlappable(isSlappable(discardPile))
-    // console.log(isSlappable(discardPile), slappable, aceOrFace, roundWinner, discardPile[discardPile.length-1], discardPile, currentPlayer, roundWinner)
   },[currentPlayer])
 
   const claimPile = () => {
-    if(slappable != "" || roundWinner == username){
-      let temp = players
-      temp[username] = temp[username].concat(discardPile).concat(penaltyPile)
-      dispatch(setGameState({players: temp, discardPile: [], penaltyPile: [], roundWinner:""}))
-    } else{
-      //user slapped the pile when it was not slappable, grab a random card and add it to the penalty cards pile
-      let index = Math.floor(Math.random()*players[username].length) // random card index in players hand
-      let card = players[username][index] //random card picked
-      let temp = players // copies the players object from state
-      temp[username].splice(index,1) //takes the card out of the players hand
+    if(discardPile.length > 0){
+      if( (slappable != "" && slappable != null) || roundWinner == username){
+        let temp = players
+        temp[username] = temp[username].concat(discardPile).concat(penaltyPile)
+        // the person that won the pile should be the next player to go
+        let winnerIndex = users.indexOf(username)
+        dispatch(setGameState({players: temp, discardPile: [], penaltyPile: [], roundWinner:"", slappable:null, currentPlayer: winnerIndex }))
+      } else{
+        //user slapped the pile when it was not slappable, grab a random card and add it to the penalty cards pile
+        let index = Math.floor(Math.random()*players[username].length) // random card index in players hand
+        let card = players[username][index] //random card picked
+        let temp = players // copies the players object from state
+        temp[username].splice(index,1) //takes the card out of the players hand
 
-      // CHANGE THE USER'S PILE AND ADDS THE CARD TO THE PENALTY PILE
-      let pile = [...penaltyPile, card]
-      dispatch(setGameState({players: temp, penaltyPile: pile}))
-    }
-
-
-    // dispatch(allActions.gameActions.setPlayers(temp))
-    // dispatch(allActions.gameActions.setDiscardPile([]))
+        // CHANGE THE USER'S PILE AND ADDS THE CARD TO THE PENALTY PILE
+        let pile = [...penaltyPile, card]
+        dispatch(setGameState({players: temp, penaltyPile: pile}))
+      }
+    }else console.log("no cards to claim!")
   }
 
   const drawCards = () =>{
@@ -145,21 +144,22 @@ function Game(){
 
   return(
     <div className="GameDiv">
-      <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
-
-      <button className="gamebuttons" onClick={()=>claimPile()}>claim pile </button>
+      <div className="gamebuttons">
+        <button className="gamebutton" onClick={()=>claimPile()}> slap pile </button>
+        <button className="gamebutton" id={username} onClick={(event)=>playCard(event)}> play card </button>
+      </div>
       {isHost ?
       <Fragment>
-        <button className="gamebuttons" onClick={()=>{shuffleDeck()}}> start new game </button>
-        <button className="gamebuttons" onClick={()=>{resetHands()}}> reset hands </button>
-        <button className="gamebuttons" onClick={()=>{checkState()}}> check state button </button>
+        <button className="hostbuttons" onClick={()=>{shuffleDeck()}}> start new game </button>
+        <button className="hostbuttons" onClick={()=>{resetHands()}}> reset hands </button>
+        <button className="hostbuttons" onClick={()=>{checkState()}}> check state button </button>
       </Fragment>
       :
       null}
       <div className="game">
         <div className="table">
           <div className="players">
-            {users.map((player,index) => <Player index={index} player={player} deckID={deckID} playersCards={players[player]} playCard={playCard}/>)}
+            {users.map((player,index) => <Player index={index} player={player} deckID={deckID} playersCards={players[player]} />)}
           </div>
           <div className="card-place">
             {discardPile.length > 3 ?

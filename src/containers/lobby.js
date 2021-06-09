@@ -1,11 +1,15 @@
 import React, { useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import { startGame } from '../actions/gameActions'
+import '../styles/lobby.css';
 
+import Colors from './colors'
 
-function Lobby({isHost}){
+function Lobby(){
 
   const dispatch = useDispatch()
+  const currentUser = useSelector(state => state.currentUser)
+  const { username, isHost } = currentUser
   const currentGame = useSelector(state => state.currentGame)
   const { deckID, users, players } = currentGame
 
@@ -15,10 +19,13 @@ function Lobby({isHost}){
 
   return(
     <div>
-      <div className="lobbyCodeDiv">Lobby code: {deckID}</div>
       <div>Players in the lobby:</div>
       <ol className="playersList">
-        {users.map(player=> <li style={{ listStylePosition: "inside", justify:"center" }} className="playerLi" >{player}</li>)}
+        {users.map(player=>
+          <li className="playerLi">
+            <div className="playerName"> {player} </div>
+            {username == player ? <Colors/> : null}
+          </li> )}
       </ol>
       {users.length > 1 && isHost ? <button onClick={()=>startGameButton()}> start game </button> :
       <div>

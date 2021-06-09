@@ -11,6 +11,7 @@ import Navbar from './components/navbar'
 import Homepage from './containers/homepage'
 import Game from './containers/game'
 import Lobby from './containers/lobby'
+
 import LobbyForm from './components/lobbyForm'
 
 function App({cableApp}) {
@@ -54,7 +55,7 @@ function App({cableApp}) {
               isGameStarted ?
               <Game />
               :
-              <Lobby isHost={isHost}/>
+              <Lobby />
             }
         </Fragment>
         :

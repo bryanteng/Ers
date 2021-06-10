@@ -1,20 +1,23 @@
 import React, {useState} from 'react'
-import { SketchPicker } from 'react-color';
+import { SketchPicker, TwitterPicker } from 'react-color';
+import {useSelector, useDispatch} from 'react-redux'
 import colorwheel from '../colorwheel.png'
+import { setGameState } from '../actions/gameActions'
 
 
-function Colors(){
+function Colors({index, userColor}){
 
+  const dispatch = useDispatch()
+  const currentGame = useSelector(state => state.currentGame)
+  const { colors } = currentGame
   const [ displayColorPicker, setDisplayColorPicker] = useState(false)
-  const[ color, setColor ] = useState('#f7f4f2')
 
-  const handleChange = (pickedColor) =>{
-    setColor(pickedColor.hex)
-  }
 
   const handleChangeComplete = (pickedColor) =>{
     console.log(pickedColor, "PICKED")
-    setColor(pickedColor.hex)
+    let temp = colors
+    temp[index] = pickedColor.hex
+    dispatch(setGameState({colors: temp}))
   }
 
   const handleDisplayColorClick = () =>{
@@ -38,9 +41,8 @@ function Colors(){
       <img onClick={()=> handleDisplayColorClick()} src={colorwheel} />
         { displayColorPicker ? <div style={ popover }>
           <div style={ cover } onClick={ ()=> handleDisplayColorClick() }/>
-          <SketchPicker
-            color={color}
-            onChange={(event) => handleChange(event)}
+          <TwitterPicker
+            color={userColor}
             onChangeComplete={(event) => handleChangeComplete(event)}
           />
         </div> : null }

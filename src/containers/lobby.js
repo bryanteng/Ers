@@ -11,7 +11,7 @@ function Lobby(){
   const currentUser = useSelector(state => state.currentUser)
   const { username, isHost } = currentUser
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, users, players } = currentGame
+  const { users, colors } = currentGame
 
   const startGameButton = () =>{
     dispatch(startGame())
@@ -21,10 +21,10 @@ function Lobby(){
     <div>
       <div>Players in the lobby:</div>
       <ol className="playersList">
-        {users.map(player=>
+        {users.map((player,index)=>
           <li className="playerLi">
-            <div className="playerName"> {player} </div>
-            {username == player ? <Colors/> : null}
+            <div className="playerName" style={{color: colors[index]}}> {player} </div>
+            {username == player ? <Colors index={index} userColor={colors[index]}/> : null}
           </li> )}
       </ol>
       {users.length > 1 && isHost ? <button onClick={()=>startGameButton()}> start game </button> :

@@ -11,6 +11,7 @@ import Navbar from './components/navbar'
 import Homepage from './containers/homepage'
 import Game from './containers/game'
 import Lobby from './containers/lobby'
+import MessageBoard from './containers/messageBoard'
 
 import LobbyForm from './components/lobbyForm'
 
@@ -49,13 +50,20 @@ function App({cableApp}) {
     <div className="App">
         {loggedIn ?
         <Fragment>
-          <Navbar username={username} deckID={deckID} />
+          <Navbar username={username} deckID={deckID} isHost={isHost}/>
             {!isInLobby ?
               <LobbyForm username={username} /> :
-              isGameStarted ?
-              <Game />
-              :
-              <Lobby />
+              <div>
+                <MessageBoard username={username}/>
+                {
+                  isGameStarted ?
+                  <Game />
+                  :
+                  <Lobby />
+                }
+
+              </div>
+
             }
         </Fragment>
         :

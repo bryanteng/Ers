@@ -204,10 +204,21 @@
 .figures.H {
   background-position: 0 20px;
 }
+
 .hostbuttons{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-right: 10px;
+  display: inline-block;
+}
+
+.hostbutton{
   position: relative;
   float:left;
-  top:0;
+  bottom:0;
 }
 
 .gamebuttons{

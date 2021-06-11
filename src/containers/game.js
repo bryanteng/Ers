@@ -149,11 +149,11 @@ function Game(){
         <button className="gamebutton" id={username} onClick={(event)=>playCard(event)}> play card </button>
       </div>
       {isHost ?
-      <Fragment>
-        <button className="hostbuttons" onClick={()=>{shuffleDeck()}}> start new game </button>
-        <button className="hostbuttons" onClick={()=>{resetHands()}}> reset hands </button>
-        <button className="hostbuttons" onClick={()=>{checkState()}}> check state button </button>
-      </Fragment>
+      <div className="hostbuttons">
+        <button className="hostbutton" onClick={()=>{shuffleDeck()}}> start new game </button>
+        <button className="hostbutton" onClick={()=>{resetHands()}}> reset hands </button>
+        <button className="hostbutton" onClick={()=>{checkState()}}> check state button </button>
+      </div>
       :
       null}
       <div className="game">

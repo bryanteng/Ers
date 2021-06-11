@@ -4,7 +4,6 @@ import {useSelector, useDispatch} from 'react-redux'
 import colorwheel from '../colorwheel.png'
 import { setGameState } from '../actions/gameActions'
 
-
 function Colors({index, userColor}){
 
   const dispatch = useDispatch()

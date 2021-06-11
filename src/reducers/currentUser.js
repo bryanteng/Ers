@@ -15,7 +15,6 @@ const currentUser = (state = {username:"", loggedIn:false, isHost: false, chipCo
             return {
               ...state,
               loggedIn: action.payload,
-              chipColor: `#${Math.floor(Math.random()*16777215).toString(16)}`
             }
 
         case "SET_HOST":

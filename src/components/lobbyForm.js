@@ -34,7 +34,7 @@ function LobbyForm({username}){
         }
         temp.push(username)
         let tempColors = data.colors
-        tempColors.push("#f7f4f2")
+        tempColors.push(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         let player_hash = {}
         for(let i of temp){
           player_hash[i] = []

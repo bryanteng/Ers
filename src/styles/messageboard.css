@@ -12,7 +12,7 @@
 
 .Messages{
   position: absolute;
-  height: 90%;
+  height: 85%;
   width: 95%;
   margin: 0;
   overflow-y: scroll;
@@ -21,6 +21,7 @@
   padding: 0;
   display: block;
   top: 0;
+  left: 0;
 }
 
 .Message{

@@ -1,6 +1,6 @@
 import { API_ROOT } from '../helpers'
 
-const currentGame = (state = {id: 0, users:[], deckID:"", players:{}, currentPlayer: 0, isInLobby:false, isGameStarted: false, roundWinner:"", gameWinner:"", discardPile: [], aceOrFace: false, slappable: "", penaltyPile: [], colors: [], messages:[]}, action) => {
+const currentGame = (state = {id: 0, users:[], deckID:"", players:{}, currentPlayer: 0, isInLobby:false, isGameStarted: false, roundWinner:"", gameWinner:"", discardPile: [], aceOrFace: false, slappable: "", penaltyPile: [], colors: [], messages:[], chances: false}, action) => {
     switch(action.type){
         case "SET_USERS":
             return {

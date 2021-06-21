@@ -1,3 +1,24 @@
 .Settings{
   color:black;
+  display: inline;
+}
+
+.SettingsCogwheel{
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  margin-left: 10px;
+}
+
+.SettingTitle{
+  text-decoration: underline;
+  display: inline;
+}
+
+.SettingInput{
+  display: inline;
+}
+
+.SettingDescription{
+  font-style: italic;
 }

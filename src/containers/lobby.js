@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import { startGame } from '../actions/gameActions'
 import '../styles/lobby.css';
+import Settings from './settings'
 
 import Colors from './colors'
 
@@ -27,11 +28,19 @@ function Lobby(){
             {username == player ? <Colors index={index} userColor={colors[index]}/> : null}
           </li> )}
       </ol>
-      {users.length > 1 && isHost ? <button onClick={()=>startGameButton()}> start game </button> :
+      {users.length > 1 && isHost ? (
+        <div>
+          <button onClick={()=>startGameButton()}> start game </button>
+          <Settings />
+        </div>
+      ) :
       <div>
-        {users.length == 1 && isHost ?
+        {users.length == 1 && isHost ? (
+        <div>
         <div>invite friends to join to begin playing</div>
-          :
+        <Settings />
+        </div>
+        )  :
           <div>wait for host to start game</div>
         }
       </div>

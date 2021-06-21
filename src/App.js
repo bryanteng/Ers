@@ -12,8 +12,6 @@ import Homepage from './containers/homepage'
 import Game from './containers/game'
 import Lobby from './containers/lobby'
 import MessageBoard from './containers/messageBoard'
-import Settings from './containers/settings'
-
 
 import LobbyForm from './components/lobbyForm'
 
@@ -50,7 +48,6 @@ function App({cableApp}) {
 
   return (
     <div className="App">
-      <Settings />
         {loggedIn ?
         <Fragment>
           <Navbar username={username} deckID={deckID} isHost={isHost}/>

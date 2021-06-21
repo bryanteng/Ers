@@ -25,10 +25,12 @@ function MessageBoard({username}){
 
   const sendMessage = (event) =>{
     event.preventDefault()
-    let temp = messages
-    temp.push("("+username +"): "+inputVal)
-    dispatch(setGameState({messages: temp}))
-    setInputVal("")
+    if(inputVal.length > 0){
+      let temp = messages
+      temp.push("("+username +"): "+inputVal)
+      dispatch(setGameState({messages: temp}))
+      setInputVal("")
+    }
   }
 
   return(

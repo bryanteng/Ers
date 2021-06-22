@@ -14,7 +14,7 @@ function Game(){
   const currentUser = useSelector(state => state.currentUser)
   const { username, isHost } = currentUser
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, users, players, discardPile, currentPlayer, aceOrFace, slappable, isGameStarted, roundWinner, penaltyPile } = currentGame
+  const { deckID, users, players, discardPile, currentPlayer, aceOrFace, slappable, isGameStarted, roundWinner, penaltyPile, messages } = currentGame
 
   // const [winner, setWinner] = useState("")
   // const [aceOrFace, setAceOrFace] = useState(false)
@@ -40,7 +40,9 @@ function Game(){
         temp[username] = temp[username].concat(discardPile).concat(penaltyPile)
         // the person that won the pile should be the next player to go
         let winnerIndex = users.indexOf(username)
-        dispatch(setGameState({players: temp, discardPile: [], penaltyPile: [], roundWinner:"", slappable:null, currentPlayer: winnerIndex }))
+        let winningMessage = `${username} slapped the pile and won ${discardPile.length + penaltyPile.length} cards!`
+        if(slappable.length > 0) winningMessage = `${username} slapped the pile and won ${discardPile.length + penaltyPile.length} cards due to ${slappable}!`
+        dispatch(setGameState({players: temp, discardPile: [], penaltyPile: [], roundWinner:"", slappable:null, currentPlayer: winnerIndex, messages: [...messages, winningMessage] }))
       } else{
         //user slapped the pile when it was not slappable, grab a random card and add it to the penalty cards pile
         let index = Math.floor(Math.random()*players[username].length) // random card index in players hand
@@ -50,7 +52,7 @@ function Game(){
 
         // CHANGE THE USER'S PILE AND ADDS THE CARD TO THE PENALTY PILE
         let pile = [...penaltyPile, card]
-        dispatch(setGameState({players: temp, penaltyPile: pile}))
+        dispatch(setGameState({players: temp, penaltyPile: pile, messages: [...messages, `${username} made a bad slap! One card to the discard pile!`]}))
       }
     }else console.log("no cards to claim!")
   }
@@ -132,9 +134,9 @@ function Game(){
       else if(aceOrFace && !currentAOF){
         turn = currentPlayer - 1 < 0 ? users.length - 1 : currentPlayer - 1
 
-        return dispatch(setGameState({discardPile: pile, players: temp, currentPlayer: turn, roundWinner: users[turn], aceOrFace: currentAOF, slappable: slappableState}))
+        return dispatch(setGameState({discardPile: pile, players: temp, currentPlayer: turn, roundWinner: users[turn], aceOrFace: currentAOF, slappable: slappableState, messages: [...messages, `${users[currentPlayer]} played ${card.value} of ${card.suit}` ]}))
       }
-      return dispatch(setGameState({discardPile: pile, players: temp, currentPlayer: turn, roundWinner: "", aceOrFace: currentAOF, slappable: slappableState }))
+      return dispatch(setGameState({discardPile: pile, players: temp, currentPlayer: turn, roundWinner: "", aceOrFace: currentAOF, slappable: slappableState, messages: [...messages, `${users[currentPlayer]} played ${card.value} of ${card.suit}`] }))
     }
   }
 

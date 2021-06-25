@@ -8,7 +8,7 @@ function LobbyForm({username}){
 
   const dispatch = useDispatch()
   const currentGame = useSelector(state => state.currentGame)
-  const { deckID, users, isInLobby } = currentGame
+  const { deckID, users, isInLobby, colors } = currentGame
 
   async function getDeck(event, deck){
     event.preventDefault()
@@ -33,11 +33,13 @@ function LobbyForm({username}){
           return dispatch(allActions.userActions.setLoggedIn(false))
         }
         temp.push(username)
+        let tempColors = data.colors
+        tempColors.push(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         let player_hash = {}
         for(let i of temp){
           player_hash[i] = []
         }
-        dispatch(setGameState({ users:temp, players: player_hash }))
+        dispatch(setGameState({ users:temp, players: player_hash, colors: tempColors }))
         dispatch(setUsers(temp))
       }
     })
@@ -57,7 +59,7 @@ function LobbyForm({username}){
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({users:[username], deckID: temp_deck_id}),
+        body: JSON.stringify({users:[username], deckID: temp_deck_id, colors:["#f7f4f2"]}),
       })
       .then(response => response.json())
       .then(data => {

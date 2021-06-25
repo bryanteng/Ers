@@ -1,0 +1,55 @@
+.MessageBoard{
+  position: fixed;
+  right: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-right: 10px;
+  background-color: #282c34;
+  height: 200px;
+  width: 300px;
+  border: 3px solid #343a45;
+}
+
+.Messages{
+  position: absolute;
+  height: 85%;
+  width: 95%;
+  margin: 0;
+  overflow-y: scroll;
+  word-wrap:break-word;
+  list-style-type: none;
+  padding: 0;
+  display: block;
+  top: 0;
+  left: 0;
+}
+
+.Message{
+  position: relative;
+  list-style: none;
+  list-style-position: inside;
+  float:left;
+}
+
+.MessageBoard:hover {
+  background-color: #3e4552;
+  color: white;
+  background: #343a45;
+}
+
+.MessageBoardInput{
+  position: absolute;
+  width: 99%;
+  background-color: #282c34;
+  border: none;
+  bottom: 0;
+  left: 0;
+  color: white;
+  border-top: 3px solid #343a45;
+
+}
+
+.MessageBoardInput:hover {
+  background-color: #21242b;
+  color: white;
+}

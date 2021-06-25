@@ -1,0 +1,24 @@
+.playersList{
+  white-space:nowrap;
+  display: block;
+  list-style-type: disc;
+}
+
+.playerLi{
+  list-style-position: inside;
+  text-align: justify;
+  margin-left: 45%;
+}
+
+.playerLi > div {
+  display: inline;
+}
+
+.colorPicker{
+
+}
+
+.colorPicker > img{
+  height: 12px;
+  width: 12px;
+}

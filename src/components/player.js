@@ -3,12 +3,12 @@ import {useSelector, useDispatch} from 'react-redux'
 
 // import { pileCheck, getCards, getCardsUrlMaker } from '../helpers'
 
-function Player({index, player, deckID, playersCards, playCard}){
+function Player({index, player, deckID, playersCards}){
 
   const [ hand, setHand ] = useState([])
   const currentUser = useSelector(state => state.currentUser)
   const currentGame = useSelector(state => state.currentGame)
-  const { currentPlayer } = currentGame
+  const { currentPlayer, colors } = currentGame
 
   useEffect(()=>{
     setHand(playersCards)
@@ -43,13 +43,13 @@ function Player({index, player, deckID, playersCards, playCard}){
       <div className={`player player-${index+1}${index==currentPlayer? ' playing' : ''}`}>
       {hand.length == 0 ?
         <Fragment>
-          <div className="avatar" id={player} style={{backgroundColor: currentUser.chipColor}}> </div>
+          <div className="avatar" id={player} style={{backgroundColor: colors[index] }}> </div>
           <div className="name">{player} </div>
           <div className="bank-value">no cards left</div>
         </Fragment>
           :
         <Fragment>
-          <div className="avatar" id={player} onClick={(event)=>playCard(event)} style={{backgroundColor:currentUser.chipColor}}> </div>
+          <div className="avatar" id={player} style={{backgroundColor: colors[index] }}> </div>
           <div className="name">{player} </div>
           <div className="bank-value">{hand.length} </div>
         </Fragment>

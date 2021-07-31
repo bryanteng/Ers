@@ -13,7 +13,7 @@ function MessageBoard({username}){
 
   const dispatch = useDispatch()
   const currentGame = useSelector(state => state.currentGame)
-  const { messages } = currentGame
+  const { messages, users, colors } = currentGame
 
   useEffect(()=>{
     chatBottom.current.scrollIntoView({ behavior: "smooth" });
@@ -27,7 +27,8 @@ function MessageBoard({username}){
     event.preventDefault()
     if(inputVal.length > 0){
       let temp = messages
-      temp.push("("+username +"): "+inputVal)
+      let message = {username: username, message: inputVal, color: colors[users.indexOf(username)]}
+      temp.push(message)
       dispatch(setGameState({messages: temp}))
       setInputVal("")
     }
@@ -38,8 +39,8 @@ function MessageBoard({username}){
     <ol className="Messages">
     {messages.map(message => (
       <Fragment>
-      <li className="Message">{message}</li>
-      <br/>
+        <li className="Message" style={{color: message.color}}>{ `(${message.username}): ${message.message}` }</li>
+        <br/>
       </Fragment>
     ) )}
     <div className="chatBottom" ref={chatBottom} style={{ float:"left", clear: "both" }} ></div>

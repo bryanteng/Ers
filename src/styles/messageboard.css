@@ -29,6 +29,7 @@
   list-style: none;
   list-style-position: inside;
   float:left;
+  text-align: left;
 }
 
 .MessageBoard:hover {

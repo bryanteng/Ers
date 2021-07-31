@@ -40,11 +40,16 @@ function Game(){
         temp[username] = temp[username].concat(discardPile).concat(penaltyPile)
         // the person that won the pile should be the next player to go
         let winnerIndex = users.indexOf(username)
+
+        // displays a message in the chat if they slapper of the pile won the cards
         let winningMessage = `${username} slapped the pile and won ${discardPile.length + penaltyPile.length} cards!`
+
+        // displays a different message if the person that slap the cards won due to a slappable rule
         if(slappable.length > 0) winningMessage = `${username} slapped the pile and won ${discardPile.length + penaltyPile.length} cards due to ${slappable}!`
+
         dispatch(setGameState({players: temp, discardPile: [], penaltyPile: [], roundWinner:"", slappable:null, currentPlayer: winnerIndex, messages: [...messages, winningMessage] }))
       } else{
-        //user slapped the pile when it was not slappable, grab a random card and add it to the penalty cards pile
+        //user slapped the pile when it was not slappable and not a round winner, grab a random card and add it to the penalty cards pile
         let index = Math.floor(Math.random()*players[username].length) // random card index in players hand
         let card = players[username][index] //random card picked
         let temp = players // copies the players object from state

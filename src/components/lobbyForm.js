@@ -20,8 +20,7 @@ function LobbyForm({username}){
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data, "data ")
-      //data = {id: 1, discard: [], users: [], deck: "05win676scin"}
+
       if( data === null || data.status === 404 ) return alert("Lobby doesn't exist")
       else{
         if( data.users.length > 8 ) return alert("Lobby full!")
@@ -32,6 +31,7 @@ function LobbyForm({username}){
           alert("Lobby already contains a user with that name! Change your username to play in this lobby.")
           return dispatch(allActions.userActions.setLoggedIn(false))
         }
+
         temp.push(username)
         let tempColors = data.colors
         tempColors.push(`#${Math.floor(Math.random()*16777215).toString(16)}`)
@@ -39,7 +39,7 @@ function LobbyForm({username}){
         for(let i of temp){
           player_hash[i] = []
         }
-        dispatch(setGameState({ users:temp, players: player_hash, colors: tempColors }))
+        dispatch(setGameState({ users:temp, players: player_hash, colors: tempColors, messages: data.messages}))
         dispatch(setUsers(temp))
       }
     })
